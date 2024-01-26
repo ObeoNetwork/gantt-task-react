@@ -61,8 +61,6 @@ export const CustomPalette: React.FC<AppProps> = props => {
               task.type = "project";
             } else if (task.start && task.start === task.end) {
               task.type = "milestone";
-            } else {
-              task.type = "task";
             }
           });
           setTasks(newTasks);
