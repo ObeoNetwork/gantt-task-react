@@ -2,12 +2,22 @@
   background: #fff;
   padding: 12px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  max-width: 20em;
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  to {
+      opacity: 1;
+  }
 }
 
 .tooltipDefaultContainerParagraph {
   font-size: 12px;
   margin-bottom: 6px;
   color: #666;
+  white-space: pre-wrap;
 }
 
 .tooltipDetailsContainer {

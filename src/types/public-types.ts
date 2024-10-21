@@ -157,6 +157,7 @@ export interface Task {
   id: string;
   type: TaskType;
   name: string;
+  description?: string;
   start: Date;
   end: Date;
   /**
@@ -181,6 +182,7 @@ export interface EmptyTask {
   id: string;
   type: "empty";
   name: string;
+  description?: string;
   parent?: string;
   comparisonLevel?: number;
   displayOrder?: number;

@@ -1,12 +1,8 @@
-import React, {
-  ComponentType,
-} from "react";
+import React, { ComponentType } from "react";
 
 import type { Strategy } from "@floating-ui/dom";
 
-import type {
-  Task,
-} from "../../types/public-types";
+import type { Task } from "../../types/public-types";
 
 import styles from "./tooltip.module.css";
 
@@ -44,7 +40,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         position: tooltipStrategy,
         top: tooltipY ?? 0,
         left: tooltipX ?? 0,
-        width: 'max-content',
+        width: "max-content",
       }}
       {...getFloatingProps()}
     >
@@ -64,10 +60,7 @@ export const StandardTooltipContent: React.FC<{
   };
 
   return (
-    <div
-      className={styles.tooltipDefaultContainer}
-      style={style}
-    >
+    <div className={styles.tooltipDefaultContainer} style={style}>
       <b style={{ fontSize: fontSize + 6 }}>{`${
         task.name
       }: ${task.start.getDate()}-${
@@ -76,15 +69,25 @@ export const StandardTooltipContent: React.FC<{
         task.end.getMonth() + 1
       }-${task.end.getFullYear()}`}</b>
       {task.end.getTime() - task.start.getTime() !== 0 && (
-        <p className={styles.tooltipDefaultContainerParagraph}>{`Duration: ${~~(
-          (task.end.getTime() - task.start.getTime()) /
-          (1000 * 60 * 60 * 24)
-        )} day(s)`}</p>
+        <p className={styles.tooltipDefaultContainerParagraph}>
+          <strong>Duration: </strong>
+          {`${~~(
+            (task.end.getTime() - task.start.getTime()) /
+            (1000 * 60 * 60 * 24)
+          )} day(s)`}
+        </p>
       )}
 
       <p className={styles.tooltipDefaultContainerParagraph}>
-        {!!task.progress && `Progress: ${task.progress} %`}
+        <strong>Progress: </strong>
+        {!!task.progress && `${task.progress} %`}
       </p>
+      {task.description != undefined ? (
+        <p className={styles.tooltipDefaultContainerParagraph}>
+          <strong>Description: </strong>
+          {task.description}
+        </p>
+      ) : null}
     </div>
   );
 };

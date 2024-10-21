@@ -16,6 +16,8 @@ export function initTasks() {
       start: new Date(currentDate.getFullYear(), currentDate.getMonth(), 2),
       end: new Date(currentDate.getFullYear(), currentDate.getMonth(), 8),
       name: "Some Project",
+      description:
+        "This is the desription of Some Project.\nThis is the second line.\nIn the last line, the description may be very very very very very very very long.",
       id: "ProjectSample",
       progress: 25,
       type: "project",
@@ -31,6 +33,7 @@ export function initTasks() {
         28
       ),
       name: "Idea",
+      description: "",
       id: "Idea",
       progress: 45,
       type: "task",
