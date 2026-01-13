@@ -7,11 +7,11 @@ import {
   OnChangeTasks,
   Task,
   TaskOrEmpty,
-} from "../src";
+} from "..";
 
-import { initTasks, onAddTask, onEditTask } from "./helper";
+import { initTasks, onAddTask, onEditTask } from "../helpers/helper";
 
-import "../dist/style.css";
+
 
 const icons: Icons = {
   renderAddIcon: () => <>➕</>,

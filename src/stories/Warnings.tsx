@@ -1,20 +1,12 @@
 import React, { useCallback, useState } from "react";
 
-import {
-  Gantt,
-  OnChangeTasks,
-  OnRelationChange,
-  RelationKind,
-  DateExtremity,
-  Task,
-  TaskOrEmpty,
-} from "../src";
+import { Gantt, Task, TaskOrEmpty, OnChangeTasks } from "..";
 
-import { initTasks, onAddTask, onEditTask } from "./helper";
+import { initTasks, onAddTask, onEditTask } from "../helpers/helper";
 
-import "../dist/style.css";
 
-export const CustomRelationKind: React.FC = props => {
+
+export const Warnings: React.FC = props => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initTasks());
 
   const onChangeTasks = useCallback<OnChangeTasks>((nextTasks, action) => {
@@ -49,28 +41,17 @@ export const CustomRelationKind: React.FC = props => {
     console.log("On Click event Id:" + task.id);
   }, []);
 
-  const authorizedRelations: RelationKind[] = ["endToStart"];
-
-  const handleRelationChange: OnRelationChange = (
-    from: [Task, DateExtremity, number],
-    to: [Task, DateExtremity, number]
-  ) => {
-    if (from[0].id !== to[0].id) {
-      alert(`Relation between ${from[0].id} and ${to[0].id}`);
-    }
-  };
-
   return (
     <Gantt
+      isShowChildOutOfParentWarnings
+      isShowDependencyWarnings
       {...props}
-      authorizedRelations={authorizedRelations}
       onAddTask={onAddTask}
       onChangeTasks={onChangeTasks}
       onDoubleClick={handleDblClick}
       onEditTask={onEditTask}
       onClick={handleClick}
       tasks={tasks}
-      onRelationChange={handleRelationChange}
     />
   );
 };

@@ -2,8 +2,8 @@ import React, { useCallback, useState } from "react";
 
 import {
   BarMoveAction,
-  ColumnProps,
   DateExtremity,
+  DateSetup,
   Gantt,
   GanttDateRoundingTimeUnit,
   OnChangeTasks,
@@ -12,11 +12,11 @@ import {
   TaskDependencyContextualPaletteProps,
   TaskOrEmpty,
   ViewMode,
-} from "../src";
+} from "..";
 
-import { initTasks, onAddTask, onEditTask } from "./helper";
+import { initTasks, onAddTask, onEditTask } from "../helpers/helper";
 
-import "../dist/style.css";
+
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
@@ -70,14 +70,6 @@ export const CustomPalette_Zoom: React.FC = props => {
   const handleClick = useCallback((task: TaskOrEmpty) => {
     console.log("On Click event Id:" + task.id);
   }, []);
-
-  const ProgressColumn: React.FC<ColumnProps> = ({ data: { task } }) => {
-    if (task.type === "project" || task.type === "task") {
-      return <>{task.progress}%</>;
-    }
-
-    return null;
-  };
 
   const handleTaskDelete = (task: Task) => {
     const conf = window.confirm("Are you sure about " + task.name + " ?");
@@ -175,19 +167,17 @@ export const CustomPalette_Zoom: React.FC = props => {
     onClose: () => any
   ) => {
     const newTasks = tasks.map(t => {
-      if (t => t.id == taskTo.id) {
-        const dependenciesToKeep = taskTo.dependencies?.filter(dependency => {
-          const isDependencyToRemove =
-            dependency.sourceId == taskFrom.id &&
-            dependency.sourceTarget == extremityFrom &&
-            dependency.ownTarget == extremityTo;
-          return !isDependencyToRemove;
-        });
-        return {
-          ...t,
-          dependencies: dependenciesToKeep,
-        };
-      } else return t;
+      const dependenciesToKeep = taskTo.dependencies?.filter(dependency => {
+        const isDependencyToRemove =
+          dependency.sourceId == taskFrom.id &&
+          dependency.sourceTarget == extremityFrom &&
+          dependency.ownTarget == extremityTo;
+        return !isDependencyToRemove;
+      });
+      return {
+        ...t,
+        dependencies: dependenciesToKeep,
+      };
     });
     onClose();
     setTasks(newTasks);
@@ -259,7 +249,7 @@ export const CustomPalette_Zoom: React.FC = props => {
   };
 
   // TODO roundDate function could be integrated in the project core and based on dateMoveStep prop. Then this test code should be used as unit test.
-  const testRoundDate = () => {
+  /*const testRoundDate = () => {
     roundAndCheck(
       new Date(2010, 0, 1, 0, 0),
       new Date(2010, 0, 1, 0, 0),
@@ -328,9 +318,9 @@ export const CustomPalette_Zoom: React.FC = props => {
       roundEndDate,
       "move"
     );
-  };
+  };*/
 
-  const roundAndCheck = (
+  /*const roundAndCheck = (
     inputDate: Date,
     expected: Date,
     roundDate: (date: Date, action: BarMoveAction) => Date,
@@ -351,7 +341,7 @@ export const CustomPalette_Zoom: React.FC = props => {
     } else {
       console.log("OK");
     }
-  };
+  };*/
 
   const dateMoveStep = { value: 1, timeUnit: GanttDateRoundingTimeUnit.DAY };
 
@@ -370,7 +360,7 @@ export const CustomPalette_Zoom: React.FC = props => {
   /* 
   The rounding for start Date is always done with floor value
   */
-  const roundStartDate = (date: Date, action: BarMoveAction): Date => {
+  const roundStartDate = (date: Date, _action: BarMoveAction): Date => {
     let value = dateMoveStep.value;
     const dimension = dateMoveStep.timeUnit;
     const newdate = new Date(date);
@@ -459,7 +449,7 @@ export const CustomPalette_Zoom: React.FC = props => {
     return newdate;
   };
 
-  const checkIsHoliday = (date: Date, _, __, dateExtremity: DateExtremity) => {
+  const checkIsHoliday = (date: Date, _minTaskDate: Date, _dateSetup: DateSetup, dateExtremity: DateExtremity) => {
     const day = date.getDay();
 
     let isHoliday = false;
