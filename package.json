@@ -44,8 +44,8 @@
     "date-fns": "2.29.3"
   },
   "peerDependencies": {
-    "@mui/icons-material": "7.0.2",
-    "@mui/material": "7.0.2",
+    "@mui/icons-material": "7.3.7",
+    "@mui/material": "7.3.7",
     "@types/react": "19.2.0",
     "@types/react-dom": "19.2.0",
     "react": "19.2.0",
@@ -57,8 +57,8 @@
     "@emotion/react": "11.13.0",
     "@emotion/styled": "11.13.0",
     "@mdx-js/react": "^2.2.1",
-    "@mui/icons-material": "7.0.2",
-    "@mui/material": "7.0.2",
+    "@mui/icons-material": "7.3.7",
+    "@mui/material": "7.3.7",
     "@rollup/plugin-image": "2.1.1",
     "@storybook/react-vite": "^10.1.11",
     "@storybook/addon-docs": "^10.1.11",
