@@ -1,20 +1,32 @@
 import React, { useCallback, useState } from "react";
 
 import {
+  Distances,
   Gantt,
+  Icons,
   OnChangeTasks,
-  OnRelationChange,
-  RelationKind,
-  DateExtremity,
   Task,
   TaskOrEmpty,
-} from "../src";
+} from "..";
 
-import { initTasks, onAddTask, onEditTask } from "./helper";
+import { initTasks, onAddTask, onEditTask } from "../helpers/helper";
 
-import "../dist/style.css";
 
-export const CustomRelationKind: React.FC = props => {
+
+const icons: Icons = {
+  renderAddIcon: () => <>➕</>,
+  renderClosedIcon: () => <>📁</>,
+  renderDeleteIcon: () => <>➖</>,
+  renderEditIcon: () => <>🗃</>,
+  renderNoChildrenIcon: () => <>🥳</>,
+  renderOpenedIcon: () => <>📂</>,
+};
+
+const distances: Partial<Distances> = {
+  expandIconWidth: 30,
+};
+
+export const CustomIcons: React.FC = props => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initTasks());
 
   const onChangeTasks = useCallback<OnChangeTasks>((nextTasks, action) => {
@@ -49,28 +61,17 @@ export const CustomRelationKind: React.FC = props => {
     console.log("On Click event Id:" + task.id);
   }, []);
 
-  const authorizedRelations: RelationKind[] = ["endToStart"];
-
-  const handleRelationChange: OnRelationChange = (
-    from: [Task, DateExtremity, number],
-    to: [Task, DateExtremity, number]
-  ) => {
-    if (from[0].id !== to[0].id) {
-      alert(`Relation between ${from[0].id} and ${to[0].id}`);
-    }
-  };
-
   return (
     <Gantt
       {...props}
-      authorizedRelations={authorizedRelations}
+      distances={distances}
+      icons={icons}
       onAddTask={onAddTask}
       onChangeTasks={onChangeTasks}
       onDoubleClick={handleDblClick}
       onEditTask={onEditTask}
       onTaskClick={handleClick}
       tasks={tasks}
-      onRelationChange={handleRelationChange}
     />
   );
 };
