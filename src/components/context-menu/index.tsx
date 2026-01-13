@@ -116,7 +116,7 @@ export function ContextMenu({
     role,
   ]);
 
-  const floatingRef = useRef<HTMLDivElement>();
+  const floatingRef = useRef<HTMLDivElement>(undefined);
 
   const setFloatingRef = useCallback(
     (el: HTMLDivElement | null) => {
