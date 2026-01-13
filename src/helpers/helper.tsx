@@ -5,7 +5,7 @@ import startOfMinute from "date-fns/startOfMinute";
 import startOfDay from "date-fns/startOfDay";
 import endOfDay from "date-fns/endOfDay";
 
-import { Task, TaskOrEmpty } from "../src";
+import { Task, TaskOrEmpty } from "..";
 
 const dateFormat = "dd/MM/yyyy HH:mm";
 

@@ -11,17 +11,17 @@ import {
   Task,
   TaskOrEmpty,
   TitleColumn,
-} from "../src";
+} from "..";
 
-import { initTasks, onAddTask, onEditTask } from "./helper";
+import { initTasks, onAddTask, onEditTask } from "../helpers/helper";
 
-import "../dist/style.css";
 import {
   Checkbox,
   FormControl,
   ListItemText,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from "@mui/material";
 
 const ProgressColumn: React.FC<ColumnProps> = ({ data: { task } }) => {
@@ -144,9 +144,10 @@ export const CustomColumns_VerticalScroll: React.FC = props => {
     { type: TaskListColumnEnum.PROGRESS, name: "Progress" },
   ];
 
-  const handleChangeColumns = event => {
-    const columnTypes: TaskListColumnEnum[] = event.target.value;
-    const newMetaColumns = allMetaColumns.filter(col =>
+  const handleChangeColumns = (event : SelectChangeEvent<TaskListColumnEnum[]>)  => {
+    if(Array.isArray(event.target.value)) {
+      const columnTypes: TaskListColumnEnum[] = event.target.value;
+      const newMetaColumns = allMetaColumns.filter(col =>
       columnTypes.includes(col.type)
     );
     setColumnTypes(newMetaColumns.map(col => col.type));
@@ -164,6 +165,8 @@ export const CustomColumns_VerticalScroll: React.FC = props => {
     });
 
     setDisplayedColumns(newDisplayedColumns);
+    }
+   
   };
 
   const onResizeColumn: OnResizeColumn = (newColumns: readonly Column[]) => {
