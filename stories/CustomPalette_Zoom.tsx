@@ -353,7 +353,7 @@ export const CustomPalette_Zoom: React.FC = props => {
     }
   };
 
-  const dateMoveStep = { value: 1, timeUnit: GanttDateRoundingTimeUnit.DAY };
+  const dateMoveStep = { value: 12, timeUnit: GanttDateRoundingTimeUnit.HOUR };
 
   const getDayOfTheYear = (date: Date) => {
     const start = new Date(date.getFullYear(), 0, 0);
