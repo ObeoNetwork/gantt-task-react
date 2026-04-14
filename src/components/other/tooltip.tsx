@@ -59,6 +59,24 @@ export const StandardTooltipContent: React.FC<{
     fontFamily,
   };
 
+  const duration = (): number => {
+            const diff =
+              (task.end.getTime() - task.start.getTime()) /
+              (1000 * 60 * 60 * 24);
+
+            const floor = Math.floor(diff);
+            let remainder = diff % 1;
+            let roundedRemainder = 0;
+            if (remainder < 0.25) {
+              roundedRemainder = 0;
+            } else if (remainder >= 0.25 && remainder < 0.75) {
+              roundedRemainder = 0.5;
+            } else if (remainder >= 0.75) {
+              roundedRemainder = 1;
+            }
+            return floor + roundedRemainder;
+  };
+
   return (
     <div className={styles.tooltipDefaultContainer} style={style}>
       <b style={{ fontSize: fontSize + 6 }}>{`${
@@ -71,10 +89,7 @@ export const StandardTooltipContent: React.FC<{
       {task.end.getTime() - task.start.getTime() !== 0 && (
         <p className={styles.tooltipDefaultContainerParagraph}>
           <strong>Duration: </strong>
-          {`${~~(
-            (task.end.getTime() - task.start.getTime()) /
-            (1000 * 60 * 60 * 24)
-          )} day(s)`}
+          {`${duration()} day(s)`}
         </p>
       )}
 
