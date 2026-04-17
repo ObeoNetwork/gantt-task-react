@@ -60,7 +60,7 @@ export type TaskGanttContentProps = {
   ) => void;
   isShowDependencyWarnings: boolean;
   mapGlobalRowIndexToTask: GlobalRowIndexToTaskMap;
-  onArrowClick?: (
+  onDependencyContextMenu?: (
     taskFrom: Task,
     extremityFrom: DateExtremity,
     taskTo: Task,
@@ -68,7 +68,7 @@ export type TaskGanttContentProps = {
     event: React.MouseEvent<SVGElement>
   ) => void;
   onArrowDoubleClick: (taskFrom: Task, taskTo: Task) => void;
-  onClick?: (task: Task, event: React.MouseEvent<SVGElement>) => void;
+  onTaskContextMenu?: (task: Task, event: React.MouseEvent<SVGElement>) => void;
   onDoubleClick?: (task: Task) => void;
   renderedRowIndexes: OptimizedListParams | null;
   rtl: boolean;
@@ -111,9 +111,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   isShowDependencyWarnings,
   mapGlobalRowIndexToTask,
   onArrowDoubleClick,
-  onArrowClick,
+  onDependencyContextMenu,
   onDoubleClick,
-  onClick,
+  onTaskContextMenu,
   renderedRowIndexes,
   rtl,
   selectTaskOnMouseDown,
@@ -240,7 +240,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
             ganttRelationEvent={ganttRelationEvent}
             isDelete={!task.isDisabled}
             onDoubleClick={onDoubleClick}
-            onClick={onClick}
+            onTaskContextMenu={onTaskContextMenu}
             onEventStart={handleTaskDragStart}
             setTooltipTask={setTooltipTask}
             onRelationStart={handleBarRelationStart}
@@ -336,7 +336,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                     isCritical={isCritical}
                     rtl={rtl}
                     onArrowDoubleClick={onArrowDoubleClick}
-                    onArrowClick={onArrowClick}
+                    onDependencyContextMenu={onDependencyContextMenu}
                     handleFixDependency={handleFixDependency}
                   />
                 </svg>
@@ -421,7 +421,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
                     isCritical={isCritical}
                     rtl={rtl}
                     onArrowDoubleClick={onArrowDoubleClick}
-                    onArrowClick={onArrowClick}
+                    onDependencyContextMenu={onDependencyContextMenu}
                     handleFixDependency={handleFixDependency}
                   />
                 </svg>

@@ -208,7 +208,7 @@ export const Gantt: React.FC<GanttProps> = ({
   onArrowDoubleClick: onArrowDoubleClickProp = undefined,
   onChangeExpandState = undefined,
   onChangeTasks = undefined,
-  onClick = undefined,
+  onContextMenu = undefined,
   onDateChange: onDateChangeProp = undefined,
   onDelete = undefined,
   onDoubleClick = undefined,
@@ -1751,9 +1751,9 @@ export const Gantt: React.FC<GanttProps> = ({
     ]
   );
 
-  const onClickTask = (task: TaskOrEmpty) => {
-    if (onClick) {
-      onClick(task);
+  const onTaskContextMenu = (task: TaskOrEmpty) => {
+    if (onContextMenu) {
+      onContextMenu(task);
     }
   };
 
@@ -1785,7 +1785,7 @@ export const Gantt: React.FC<GanttProps> = ({
       isShowDependencyWarnings,
       mapGlobalRowIndexToTask,
       onArrowDoubleClick,
-      onClick: onClickTask,
+      onContextMenu: onTaskContextMenu,
       onDoubleClick,
       onFixDependencyPosition,
       onProgressChange,
@@ -1835,7 +1835,7 @@ export const Gantt: React.FC<GanttProps> = ({
       mapTaskToCoordinates,
       onArrowDoubleClick,
       onChangeTooltipTask,
-      onClick,
+      onContextMenu,
       onDoubleClick,
       onFixDependencyPosition,
       onProgressChange,
@@ -1883,7 +1883,7 @@ export const Gantt: React.FC<GanttProps> = ({
     icons,
     isShowTaskNumbers,
     mapTaskToNestedIndex,
-    onClick: onClickTask,
+    onContextMenu: onTaskContextMenu,
     onExpanderClick: handleExpanderClick,
     selectTaskOnMouseDown,
     selectedIdsMirror,
