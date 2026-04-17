@@ -366,6 +366,10 @@ export interface EventOption {
    */
   onClick?: (task: TaskOrEmpty) => void;
   /**
+   * Invokes on bar right click.
+   */
+  onContextMenu?: (task: TaskOrEmpty) => void;
+  /**
    * Recount descedents of a group task when moving
    */
   isMoveChildsWithParent?: boolean;
@@ -637,7 +641,7 @@ export interface TaskListTableProps {
   icons?: Partial<Icons>;
   isShowTaskNumbers: boolean;
   mapTaskToNestedIndex: MapTaskToNestedIndex;
-  onClick: (task: TaskOrEmpty) => void;
+  onContextMenu: (task: TaskOrEmpty) => void;
   onExpanderClick: (task: Task) => void;
   renderedIndexes: OptimizedListParams | null;
   scrollToTask: (task: Task) => void;
