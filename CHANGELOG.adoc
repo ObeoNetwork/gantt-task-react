@@ -1,0 +1,16 @@
+= Changelog
+
+== v0.6.6
+
+=== Breaking changes
+- Renamed Gantt prop `onClick` to `onTaskClick`
+- Added `onTaskContextMenu` prop
+
+=== Dependency update
+
+=== New features
+
+=== Improvements
+
+=== Bug fixes
+- Fixed an issue introduced in v0.6.5 where left-clicking a task did not work
