@@ -641,6 +641,7 @@ export interface TaskListTableProps {
   icons?: Partial<Icons>;
   isShowTaskNumbers: boolean;
   mapTaskToNestedIndex: MapTaskToNestedIndex;
+  onClick: (task: TaskOrEmpty) => void;
   onContextMenu: (task: TaskOrEmpty) => void;
   onExpanderClick: (task: Task) => void;
   renderedIndexes: OptimizedListParams | null;

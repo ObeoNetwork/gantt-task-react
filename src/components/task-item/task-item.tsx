@@ -55,6 +55,7 @@ export type TaskItemProps = {
   isCritical: boolean;
   rtl: boolean;
   onDoubleClick?: (task: Task) => void;
+  onClick?: (task: Task, event: React.MouseEvent<SVGElement>) => void;
   onTaskContextMenu?: (task: Task, event: React.MouseEvent<SVGElement>) => void;
   setTooltipTask: (task: Task | null, element: Element | null) => void;
   onEventStart: (
@@ -90,6 +91,7 @@ const TaskItemInner: React.FC<TaskItemProps> = props => {
     isDateChangeable,
     isDelete,
     isSelected,
+    onClick = undefined,
     onTaskContextMenu = undefined,
     onDoubleClick = undefined,
     onEventStart,
@@ -174,6 +176,16 @@ const TaskItemInner: React.FC<TaskItemProps> = props => {
   }, [task, fixEndPosition, outOfParentWarnings, getTaskGlobalIndexByRef]);
 
   const handleClick = useCallback(
+    (event: React.MouseEvent<SVGElement>) => {
+      if (onClick) {
+        onClick(task, event);
+      }
+    },
+    [onClick, task]
+  );
+
+
+  const handleRightClick = useCallback(
     (event: React.MouseEvent<SVGElement>) => {
       if (onTaskContextMenu) {
         onTaskContextMenu(task, event);
@@ -377,7 +389,8 @@ const TaskItemInner: React.FC<TaskItemProps> = props => {
       onMouseDown={onMouseDown}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onContextMenu={handleClick}
+      onClick={handleClick}
+      onContextMenu={handleRightClick}
       onDoubleClick={handleDoubleClick}
       ref={taskRootRef}
     >

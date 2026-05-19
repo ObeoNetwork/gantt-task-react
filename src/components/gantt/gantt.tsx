@@ -208,6 +208,7 @@ export const Gantt: React.FC<GanttProps> = ({
   onArrowDoubleClick: onArrowDoubleClickProp = undefined,
   onChangeExpandState = undefined,
   onChangeTasks = undefined,
+  onClick = undefined,
   onContextMenu = undefined,
   onDateChange: onDateChangeProp = undefined,
   onDelete = undefined,
@@ -1757,6 +1758,12 @@ export const Gantt: React.FC<GanttProps> = ({
     }
   };
 
+    const onClickTask = (task: TaskOrEmpty) => {
+    if (onClick) {
+      onClick(task);
+    }
+  };
+
   const barProps: TaskGanttContentProps = useMemo(
     () => ({
       authorizedRelations,
@@ -1785,6 +1792,7 @@ export const Gantt: React.FC<GanttProps> = ({
       isShowDependencyWarnings,
       mapGlobalRowIndexToTask,
       onArrowDoubleClick,
+      onClick: onClickTask,
       onContextMenu: onTaskContextMenu,
       onDoubleClick,
       onFixDependencyPosition,
@@ -1835,6 +1843,7 @@ export const Gantt: React.FC<GanttProps> = ({
       mapTaskToCoordinates,
       onArrowDoubleClick,
       onChangeTooltipTask,
+      onClick,
       onContextMenu,
       onDoubleClick,
       onFixDependencyPosition,
@@ -1883,6 +1892,7 @@ export const Gantt: React.FC<GanttProps> = ({
     icons,
     isShowTaskNumbers,
     mapTaskToNestedIndex,
+    onClick: onClickTask,
     onContextMenu: onTaskContextMenu,
     onExpanderClick: handleExpanderClick,
     selectTaskOnMouseDown,

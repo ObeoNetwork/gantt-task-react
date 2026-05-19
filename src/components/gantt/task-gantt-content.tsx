@@ -68,6 +68,7 @@ export type TaskGanttContentProps = {
     event: React.MouseEvent<SVGElement>
   ) => void;
   onArrowDoubleClick: (taskFrom: Task, taskTo: Task) => void;
+  onClick?: (task: Task, event: React.MouseEvent<SVGElement>) => void;
   onTaskContextMenu?: (task: Task, event: React.MouseEvent<SVGElement>) => void;
   onDoubleClick?: (task: Task) => void;
   renderedRowIndexes: OptimizedListParams | null;
@@ -113,6 +114,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   onArrowDoubleClick,
   onDependencyContextMenu,
   onDoubleClick,
+  onClick,
   onTaskContextMenu,
   renderedRowIndexes,
   rtl,
@@ -240,6 +242,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
             ganttRelationEvent={ganttRelationEvent}
             isDelete={!task.isDisabled}
             onDoubleClick={onDoubleClick}
+            onClick={onClick}
             onTaskContextMenu={onTaskContextMenu}
             onEventStart={handleTaskDragStart}
             setTooltipTask={setTooltipTask}

@@ -30,6 +30,7 @@ const TaskListTableDefaultInner: React.FC<TaskListTableProps> = ({
   icons,
   isShowTaskNumbers,
   mapTaskToNestedIndex,
+  onClick,
   onContextMenu,
   onExpanderClick,
   renderedIndexes,
@@ -107,6 +108,7 @@ const TaskListTableDefaultInner: React.FC<TaskListTableProps> = ({
           isEven={index % 2 === 1}
           isSelected={selectedIdsMirror[id]}
           isShowTaskNumbers={isShowTaskNumbers}
+          onClick={onClick}
           onRightClick={onContextMenu}
           onExpanderClick={onExpanderClick}
           scrollToTask={scrollToTask}
