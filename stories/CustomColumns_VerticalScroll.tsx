@@ -208,7 +208,7 @@ export const CustomColumns_VerticalScroll: React.FC = props => {
           onChangeTasks={onChangeTasks}
           onDoubleClick={handleDblClick}
           onEditTask={onEditTask}
-          onClick={handleClick}
+          onTaskClick={handleClick}
           tasks={tasks}
           onResizeColumn={onResizeColumn}
         />

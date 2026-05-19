@@ -208,8 +208,8 @@ export const Gantt: React.FC<GanttProps> = ({
   onArrowDoubleClick: onArrowDoubleClickProp = undefined,
   onChangeExpandState = undefined,
   onChangeTasks = undefined,
-  onClick = undefined,
-  onContextMenu = undefined,
+  onTaskClick = undefined,
+  onTaskContextMenu = undefined,
   onDateChange: onDateChangeProp = undefined,
   onDelete = undefined,
   onDoubleClick = undefined,
@@ -1752,15 +1752,15 @@ export const Gantt: React.FC<GanttProps> = ({
     ]
   );
 
-  const onTaskContextMenu = (task: TaskOrEmpty) => {
-    if (onContextMenu) {
-      onContextMenu(task);
+  const handleTaskContextMenu = (task: TaskOrEmpty) => {
+    if (onTaskContextMenu) {
+      onTaskContextMenu(task);
     }
   };
 
-    const onClickTask = (task: TaskOrEmpty) => {
-    if (onClick) {
-      onClick(task);
+    const handleTaskClick = (task: TaskOrEmpty) => {
+    if (onTaskClick) {
+      onTaskClick(task);
     }
   };
 
@@ -1792,8 +1792,8 @@ export const Gantt: React.FC<GanttProps> = ({
       isShowDependencyWarnings,
       mapGlobalRowIndexToTask,
       onArrowDoubleClick,
-      onClick: onClickTask,
-      onContextMenu: onTaskContextMenu,
+      onTaskClick: handleTaskClick,
+      onTaskContextMenu: handleTaskContextMenu,
       onDoubleClick,
       onFixDependencyPosition,
       onProgressChange,
@@ -1843,8 +1843,8 @@ export const Gantt: React.FC<GanttProps> = ({
       mapTaskToCoordinates,
       onArrowDoubleClick,
       onChangeTooltipTask,
-      onClick,
-      onContextMenu,
+      onTaskClick,
+      onTaskContextMenu,
       onDoubleClick,
       onFixDependencyPosition,
       onProgressChange,
@@ -1892,8 +1892,8 @@ export const Gantt: React.FC<GanttProps> = ({
     icons,
     isShowTaskNumbers,
     mapTaskToNestedIndex,
-    onClick: onClickTask,
-    onContextMenu: onTaskContextMenu,
+    onTaskClick: onTaskClick,
+    onTaskContextMenu: onTaskContextMenu,
     onExpanderClick: handleExpanderClick,
     selectTaskOnMouseDown,
     selectedIdsMirror,

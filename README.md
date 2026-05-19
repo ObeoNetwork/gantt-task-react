@@ -42,7 +42,8 @@ You may handle actions
   onTaskDelete={onTaskDelete}
   onProgressChange={onProgressChange}
   onDoubleClick={onDblClick}
-  onClick={onClick}
+  onTaskClick={onTaskClick}
+  onTaskContextMenu={onTaskContextMenu}
 />
 ```
 
@@ -67,58 +68,59 @@ npm start
 
 ### EventOption
 
-| Parameter Name     | Type                                                                          | Description                                                                             |
-| :----------------- | :---------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
-| onSelect           | (task: Task, isSelected: boolean) => void                                     | Specifies the function to be executed on the taskbar select or unselect event.          |
-| onDoubleClick      | (task: Task) => void                                                          | Specifies the function to be executed on the taskbar onDoubleClick event.               |
-| onClick            | (task: Task) => void                                                          | Specifies the function to be executed on the taskbar onClick event.                     |
-| onDelete\*         | (task: Task) => void/boolean/Promise<void>/Promise<boolean>                   | Specifies the function to be executed on the taskbar on Delete button press event.      |
-| onDateChange\*     | (task: Task, children: Task[]) => void/boolean/Promise<void>/Promise<boolean> | Specifies the function to be executed when drag taskbar event on timeline has finished. |
-| onProgressChange\* | (task: Task, children: Task[]) => void/boolean/Promise<void>/Promise<boolean> | Specifies the function to be executed when drag taskbar progress event has finished.    |
-| onExpanderClick\*  | onExpanderClick: (task: Task) => void;                                        | Specifies the function to be executed on the table expander click                       |
-| onWheel\*          | onWheel: (wheelEvent: WheelEvent) => void;                                    | Specifies the function to be executed when the mouse wheel is used                      |
-| timeStep           | number                                                                        | A time step value for onDateChange. Specify in milliseconds.                            |
+| Parameter Name     | Type                                                                                | Description                                                                             |
+| :----------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| onSelect           | (task: Task, isSelected: boolean) => void                                           | Specifies the function to be executed on the taskbar select or unselect event.          |
+| onDoubleClick      | (task: Task) => void                                                                | Specifies the function to be executed on the taskbar onDoubleClick event.               |
+| onTaskClick        | (task: Task) => void                                                                | Specifies the function to be executed on the taskbar on click event.                    |
+| onTaskContextMenu  | (task: Task) => void                                                                | Specifies the function to be executed on the taskbar on right click event.              |
+| onDelete\*         | (task: Task) => void/boolean/Promise `<void>`/Promise `<boolean>`                   | Specifies the function to be executed on the taskbar on Delete button press event.      |
+| onDateChange\*     | (task: Task, children: Task[]) => void/boolean/Promise `<void>`/Promise `<boolean>` | Specifies the function to be executed when drag taskbar event on timeline has finished. |
+| onProgressChange\* | (task: Task, children: Task[]) => void/boolean/Promise `<void>`/Promise `<boolean>` | Specifies the function to be executed when drag taskbar progress event has finished.    |
+| onExpanderClick\*  | onExpanderClick: (task: Task) => void;                                              | Specifies the function to be executed on the table expander click                       |
+| onWheel\*          | onWheel: (wheelEvent: WheelEvent) => void;                                          | Specifies the function to be executed when the mouse wheel is used                      |
+| timeStep           | number                                                                              | A time step value for onDateChange. Specify in milliseconds.                            |
 
 \* Chart undoes operation if method return false or error. Parameter children returns one level deep records.
 
 ### DisplayOption
 
-| Parameter Name      | Type    | Description                                                                                                 |
-| :------------------ | :------ | :---------------------------------------------------------------------------------------------------------- |
-| viewMode            | enum    | Specifies the time scale. Hour, Quarter Day, Half Day, Day, Week(ISO-8601, 1st day is Monday), Month, Year. |
-| viewDate            | date    | Specifies display date and time for display.                                                                |
-| preStepsCount       | number  | Specifies empty space before the fist task                                                                  |
-| locale              | string  | Specifies the month name language. Able formats: ISO 639-2, Java Locale.                                    |
-| monthCalendarFormat | string  | Specifies the month display on calendar                                                                     |
-| monthTaskListFormat | string  | Specifies the month display on list.                                                                        |
-| rtl                 | boolean | Sets rtl mode.                                                                                              |
-| roundDate           |         | Allow to customize the way the date start/end are rounded                                                   |
-| checkIsHoliday      |         | Tells if a date is a holday. It impacts the style of the day and the way the date is adjusted to working days|
+| Parameter Name      | Type    | Description                                                                                                                             |
+| :------------------ | :------ | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| viewMode            | enum    | Specifies the time scale. Hour, Quarter Day, Half Day, Day, Week(ISO-8601, 1st day is Monday), Month, Year.                             |
+| viewDate            | date    | Specifies display date and time for display.                                                                                            |
+| preStepsCount       | number  | Specifies empty space before the fist task                                                                                              |
+| locale              | string  | Specifies the month name language. Able formats: ISO 639-2, Java Locale.                                                                |
+| monthCalendarFormat | string  | Specifies the month display on calendar                                                                                                 |
+| monthTaskListFormat | string  | Specifies the month display on list.                                                                                                    |
+| rtl                 | boolean | Sets rtl mode.                                                                                                                          |
+| roundDate           |         | Allow to customize the way the date start/end are rounded                                                                               |
+| checkIsHoliday      |         | Tells if a date is a holday. It impacts the style of the day and the way the date is adjusted to working days                           |
 | dateMoveStep        |         | An object that corresponds to a duration. It gives the step to ajust to the working day when moving the date allowing a smooth feedback |
 
 ### StylingOption
 
-| Parameter Name             | Type   | Description                                                                                    |
-| :------------------------- | :----- | :--------------------------------------------------------------------------------------------- |
-| headerHeight               | number | Specifies the header height.                                                                   |
-| columnWidth                | number | Specifies the time period width.                                                               |
-| listCellWidth              | string | Specifies the task list cell width. Empty string is mean "no display".                         |
-| rowHeight                  | number | Specifies the task row height.                                                                 |
-| barCornerRadius            | number | Specifies the taskbar corner rounding.                                                         |
-| barFill                    | number | Specifies the taskbar occupation. Sets in percent from 0 to 100.                               |
-| handleWidth                | number | Specifies width the taskbar drag event control for start and end dates.                        |
-| fontFamily                 | string | Specifies the application font.                                                                |
-| fontSize                   | string | Specifies the application font size.                                                           |
-| barProgressColor           | string | Specifies the taskbar progress fill color globally.                                            |
-| barProgressSelectedColor   | string | Specifies the taskbar progress fill color globally on select.                                  |
-| barBackgroundColor         | string | Specifies the taskbar background fill color globally.                                          |
-| barBackgroundSelectedColor | string | Specifies the taskbar background fill color globally on select.                                |
-| arrowColor                 | string | Specifies the relationship arrow fill color.                                                   |
-| arrowIndent                | number | Specifies the relationship arrow right indent. Sets in px                                      |
-| todayColor                 | string | Specifies the current period column fill color.                                                |
-| TooltipContent             |        | Specifies the Tooltip view for selected taskbar.                                               |
-| TaskListHeader             |        | Specifies the task list Header view                                                            |
-| TaskListTable              |        | Specifies the task list Table view                                                             |
+| Parameter Name             | Type   | Description                                                             |
+| :------------------------- | :----- | :---------------------------------------------------------------------- |
+| headerHeight               | number | Specifies the header height.                                            |
+| columnWidth                | number | Specifies the time period width.                                        |
+| listCellWidth              | string | Specifies the task list cell width. Empty string is mean "no display".  |
+| rowHeight                  | number | Specifies the task row height.                                          |
+| barCornerRadius            | number | Specifies the taskbar corner rounding.                                  |
+| barFill                    | number | Specifies the taskbar occupation. Sets in percent from 0 to 100.        |
+| handleWidth                | number | Specifies width the taskbar drag event control for start and end dates. |
+| fontFamily                 | string | Specifies the application font.                                         |
+| fontSize                   | string | Specifies the application font size.                                    |
+| barProgressColor           | string | Specifies the taskbar progress fill color globally.                     |
+| barProgressSelectedColor   | string | Specifies the taskbar progress fill color globally on select.           |
+| barBackgroundColor         | string | Specifies the taskbar background fill color globally.                   |
+| barBackgroundSelectedColor | string | Specifies the taskbar background fill color globally on select.         |
+| arrowColor                 | string | Specifies the relationship arrow fill color.                            |
+| arrowIndent                | number | Specifies the relationship arrow right indent. Sets in px               |
+| todayColor                 | string | Specifies the current period column fill color.                         |
+| TooltipContent             |        | Specifies the Tooltip view for selected taskbar.                        |
+| TaskListHeader             |        | Specifies the task list Header view                                     |
+| TaskListTable              |        | Specifies the task list Table view                                      |
 
 - TooltipContent: [`React.FC<{ task: Task; fontSize: string; fontFamily: string; }>;`](https://github.com/MaTeMaTuK/gantt-task-react/blob/main/src/components/other/tooltip.tsx#L56)
 - TaskListHeader: `React.FC<{ headerHeight: number; rowWidth: string; fontFamily: string; fontSize: string;}>;`
@@ -126,25 +128,25 @@ npm start
 
 ### Task
 
-| Parameter Name | Type     | Description                                                                                           |
-| :------------- | :------- | :---------------------------------------------------------------------------------------------------- |
-| id\*           | string   | Task id.                                                                                              |
-| name\*         | string   | Task display name.                                                                                    |
-| type\*         | string   | Task display type: **task**, **milestone**, **project**                                               |
-| start\*        | Date     | Task start date.                                                                                      |
-| end\*          | Date     | Task end date.                                                                                        |
-| progress\*     | number   | Task progress. Sets in percent from 0 to 100.                                                         |
-| assignees\*    | string[] | List of people assigned to the task                                                                   |
-| dependencies   | string[] | Specifies the parent dependencies ids.                                                                |
-| styles         | object   | Specifies the taskbar styling settings locally. Object is passed with the following attributes:       |
-|                |          | - **backgroundColor**: String. Specifies the taskbar background fill color locally.                   |
-|                |          | - **backgroundSelectedColor**: String. Specifies the taskbar background fill color locally on select. |
-|                |          | - **progressColor**: String. Specifies the taskbar progress fill color locally.                       |
-|                |          | - **progressSelectedColor**: String. Specifies the taskbar progress fill color globally on select.    |
-| isDisabled     | bool     | Disables all action for current task.                                                                 |
-| fontSize       | string   | Specifies the taskbar font size locally.                                                              |
-| project        | string   | Task project name                                                                                     |
-| hideChildren   | bool     | Hide children items. Parameter works with project type only                                           |
+| Parameter Name | Type     | Description                                                                                          |
+| :------------- | :------- | :--------------------------------------------------------------------------------------------------- |
+| id\*           | string   | Task id.                                                                                             |
+| name\*         | string   | Task display name.                                                                                   |
+| type\*         | string   | Task display type:**task**, **milestone**, **project**                                               |
+| start\*        | Date     | Task start date.                                                                                     |
+| end\*          | Date     | Task end date.                                                                                       |
+| progress\*     | number   | Task progress. Sets in percent from 0 to 100.                                                        |
+| assignees\*    | string[] | List of people assigned to the task                                                                  |
+| dependencies   | string[] | Specifies the parent dependencies ids.                                                               |
+| styles         | object   | Specifies the taskbar styling settings locally. Object is passed with the following attributes:      |
+|                |          | -**backgroundColor**: String. Specifies the taskbar background fill color locally.                   |
+|                |          | -**backgroundSelectedColor**: String. Specifies the taskbar background fill color locally on select. |
+|                |          | -**progressColor**: String. Specifies the taskbar progress fill color locally.                       |
+|                |          | -**progressSelectedColor**: String. Specifies the taskbar progress fill color globally on select.    |
+| isDisabled     | bool     | Disables all action for current task.                                                                |
+| fontSize       | string   | Specifies the taskbar font size locally.                                                             |
+| project        | string   | Task project name                                                                                    |
+| hideChildren   | bool     | Hide children items. Parameter works with project type only                                          |
 
 \*Required
 
