@@ -58,7 +58,7 @@ export const Comparison: React.FC = props => {
       onChangeTasks={onChangeTasks}
       onDoubleClick={handleDblClick}
       onEditTask={onEditTask}
-      onClick={handleClick}
+      onTaskClick={handleClick}
       tasks={tasks}
     />
   );

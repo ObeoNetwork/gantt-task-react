@@ -485,7 +485,8 @@ export const CustomPalette_Zoom: React.FC = props => {
       onChangeTasks={onChangeTasks}
       onDoubleClick={handleDblClick}
       onEditTask={onEditTask}
-      onClick={handleClick}
+      onTaskClick={handleClick}
+      onTaskContextMenu={handleClick}
       tasks={tasks}
       viewMode={viewMode}
       roundDate={roundDate}

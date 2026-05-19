@@ -169,7 +169,7 @@ export const StressTest: React.FC<AppProps> = ({
       onChangeTasks={onChangeTasks}
       onDoubleClick={handleDblClick}
       onEditTask={onEditTask}
-      onClick={handleClick}
+      onTaskClick={handleClick}
       tasks={tasks}
     />
   );

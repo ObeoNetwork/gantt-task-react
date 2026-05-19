@@ -145,7 +145,7 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
   const [selectedTask, setSelectedTask] = React.useState<Task>(null);
   const open = Boolean(anchorEl);
 
-  const onClickTask: (
+  const onTaskClick: (
     task: Task,
     event: React.MouseEvent<SVGElement>
   ) => void = (task, event) => {
@@ -154,7 +154,7 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
     setSelectedDependency(null);
     setAnchorEl(null);
     setSelectedTask(task);
-    barProps.onClick(task, event);
+    barProps.onTaskClick(task, event);
   };
 
   const onRightClickTask: (
@@ -167,7 +167,7 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
     setSelectedDependency(null);
     setAnchorEl(event.currentTarget);
     setSelectedTask(task);
-    barProps.onClick(task, event);
+    barProps.onTaskClick(task, event);
   };
 
   const onClose = () => {
@@ -225,7 +225,7 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
             <Grid {...gridProps} />
             <TaskGanttContent
               {...barProps}
-              onClick={onClickTask}
+              onTaskClick={onTaskClick}
               onTaskContextMenu={onRightClickTask}
               onDependencyContextMenu={onDependencyContextMenu}
             />
