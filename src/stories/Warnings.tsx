@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
 
-import { Gantt, Task, TaskOrEmpty, OnChangeTasks } from "../src";
+import { Gantt, Task, TaskOrEmpty, OnChangeTasks } from "..";
 
-import { initTasks, onAddTask, onEditTask } from "./helper";
+import { initTasks, onAddTask, onEditTask } from "../helpers/helper";
 
-import "../dist/style.css";
+
 
 export const Warnings: React.FC = props => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initTasks());
