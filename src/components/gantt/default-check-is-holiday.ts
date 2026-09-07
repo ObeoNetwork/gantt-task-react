@@ -1,5 +1,5 @@
-import differenceInDays from 'date-fns/differenceInDays';
-import isWeekend from 'date-fns/isWeekend';
+import { differenceInDays } from 'date-fns/differenceInDays';
+import { isWeekend } from 'date-fns/isWeekend';
 
 import { DateSetup, ViewMode } from '../../types/public-types';
 

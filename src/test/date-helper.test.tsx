@@ -1,5 +1,5 @@
-import addMonths from 'date-fns/addMonths';
-import addDays from 'date-fns/addDays';
+import { addMonths } from 'date-fns/addMonths';
+import { addDays } from 'date-fns/addDays';
 
 import {
   getWeekNumberISO8601,

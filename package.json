@@ -41,7 +41,7 @@
   "dependencies": {
     "@floating-ui/dom": "1.1.1",
     "@floating-ui/react": "0.27.16",
-    "date-fns": "2.29.3"
+    "date-fns": "4.4.0"
   },
   "peerDependencies": {
     "@mui/icons-material": "7.3.10",

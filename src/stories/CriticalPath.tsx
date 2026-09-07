@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-import addDays from "date-fns/addDays";
+import { addDays } from "date-fns/addDays";
 
 import { Gantt, OnChangeTasks, Task, TaskOrEmpty } from "..";
 

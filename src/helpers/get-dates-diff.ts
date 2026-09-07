@@ -1,8 +1,8 @@
-import differenceInDays from "date-fns/differenceInDays";
-import differenceInHours from "date-fns/differenceInHours";
-import differenceInMonths from "date-fns/differenceInMonths";
-import differenceInWeeks from "date-fns/differenceInWeeks";
-import differenceInYears from "date-fns/differenceInYears";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { differenceInHours } from "date-fns/differenceInHours";
+import { differenceInMonths } from "date-fns/differenceInMonths";
+import { differenceInWeeks } from "date-fns/differenceInWeeks";
+import { differenceInYears } from "date-fns/differenceInYears";
 
 import { ViewMode } from "../types/public-types";
 
