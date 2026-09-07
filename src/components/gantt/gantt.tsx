@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 
-import enDateLocale from "date-fns/locale/en-US";
+import { enUS as enDateLocale } from "date-fns/locale/en-US";
 
 import {
   BarMoveAction,

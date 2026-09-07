@@ -1,5 +1,5 @@
-import addMilliseconds from "date-fns/addMilliseconds";
-import differenceInMilliseconds from "date-fns/differenceInMilliseconds";
+import { addMilliseconds } from "date-fns/addMilliseconds";
+import { differenceInMilliseconds } from "date-fns/differenceInMilliseconds";
 
 import type {
   AdjustTaskToWorkingDatesParams,

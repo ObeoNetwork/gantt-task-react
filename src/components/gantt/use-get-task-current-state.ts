@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
-import addMilliseconds from "date-fns/addMilliseconds";
-import maxDate from "date-fns/max";
-import minDate from "date-fns/min";
+import { addMilliseconds } from "date-fns/addMilliseconds";
+import { max as maxDate } from "date-fns/max";
+import { min as minDate } from "date-fns/min";
 
 import { checkIsDescendant } from "../../helpers/check-is-descendant";
 
