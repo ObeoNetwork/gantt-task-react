@@ -13,10 +13,10 @@ jobs:
       - name: Begin CI...
         uses: actions/checkout@v2
 
-      - name: Use Node 16
+      - name: Use Node 22
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 22.x
           registry-url: https://npm.pkg.github.com/
 
       - name: NPM Publish
