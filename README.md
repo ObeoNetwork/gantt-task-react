@@ -85,19 +85,19 @@ npm start
 
 ### DisplayOption
 
-| Parameter Name      | Type    | Description                                                                                                                             |
-| :------------------ | :------ | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| viewMode            | enum    | Specifies Calendar column presentation. Hour, Quarter Day, Half Day, Day, Week(ISO-8601, 1st day is Monday), Month, Year.               |
-| zoomLevel           | number  | Task timeline zoom percentage (1–100). At 100, visible tasks fit with 5% space before and 15% after.                                    |
-| viewDate            | date    | Specifies display date and time for display.                                                                                            |
-| preStepsCount       | number  | Specifies empty space before the fist task                                                                                              |
-| locale              | string  | Specifies the month name language. Able formats: ISO 639-2, Java Locale.                                                                |
-| monthCalendarFormat | string  | Specifies the month display on calendar                                                                                                 |
-| monthTaskListFormat | string  | Specifies the month display on list.                                                                                                    |
-| rtl                 | boolean | Sets rtl mode.                                                                                                                          |
-| roundDate           |         | Allow to customize the way the date start/end are rounded                                                                               |
-| checkIsHoliday      |         | Tells if a date is a holday. It impacts the style of the day and the way the date is adjusted to working days                           |
-| dateMoveStep        |         | An object that corresponds to a duration. It gives the step to ajust to the working day when moving the date allowing a smooth feedback |
+| Parameter Name      | Type    | Description                                                                                                                                         |
+| :------------------ | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
+| viewMode            | enum    | Specifies Calendar column presentation. Hour, Quarter Day, Half Day, Day, Week(ISO-8601, 1st day is Monday), Month, Year.                           |
+| zoomLevel           | number  | Task timeline zoom percentage (minimum 1). At 100, visible tasks fit with 5% space before and 15% after; higher values enable horizontal scrolling. |
+| viewDate            | date    | Specifies display date and time for display.                                                                                                        |
+| preStepsCount       | number  | Specifies empty space before the fist task                                                                                                          |
+| locale              | string  | Specifies the month name language. Able formats: ISO 639-2, Java Locale.                                                                            |
+| monthCalendarFormat | string  | Specifies the month display on calendar                                                                                                             |
+| monthTaskListFormat | string  | Specifies the month display on list.                                                                                                                |
+| rtl                 | boolean | Sets rtl mode.                                                                                                                                      |
+| roundDate           |         | Allow to customize the way the date start/end are rounded                                                                                           |
+| checkIsHoliday      |         | Tells if a date is a holday. It impacts the style of the day and the way the date is adjusted to working days                                       |
+| dateMoveStep        |         | An object that corresponds to a duration. It gives the step to ajust to the working day when moving the date allowing a smooth feedback             |
 
 ### StylingOption
 

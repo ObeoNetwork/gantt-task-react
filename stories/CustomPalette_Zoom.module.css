@@ -5,3 +5,15 @@
   grid-auto-rows: 28px;
   place-items: center;
 }
+
+.controls {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.controls select {
+  min-width: 130px;
+  padding: 4px 8px;
+}
