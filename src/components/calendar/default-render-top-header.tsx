@@ -1,5 +1,6 @@
 import format from "date-fns/format";
 
+import { getWeekNumberISO8601 } from "../../helpers/date-helper";
 import { DateSetup, ViewMode } from "../../types/public-types";
 
 const getDayText = (date: Date, dateSetup: DateSetup) => {
@@ -35,11 +36,12 @@ export const defaultRenderTopHeader = (
     case ViewMode.Week:
       return `${getMonthText(date, dateSetup)}, ${date.getFullYear()}`;
 
-    case ViewMode.TwoDays:
-      return getMonthText(date, dateSetup);
-
     case ViewMode.Day:
-      return getMonthText(date, dateSetup);
+    case ViewMode.TwoDays:
+      return `W${getWeekNumberISO8601(date)}, ${getMonthText(
+        date,
+        dateSetup
+      )}`;
 
     case ViewMode.QuarterDay:
     case ViewMode.HalfDay:
