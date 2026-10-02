@@ -19,8 +19,12 @@ export type CalendarProps = {
 };
 
 export const Calendar: React.FC<CalendarProps> = ({ axis, dateSetup, distances, fontFamily, fontSize, fullSvgWidth, isUnknownDates, renderBottomHeader = defaultRenderBottomHeader, renderTopHeader = defaultRenderTopHeader }) => {
-  const { viewMode, cells } = useMemo(() => getCalendarCells(axis, dateSetup.viewMode, distances.columnWidth), [axis, dateSetup.viewMode, distances.columnWidth]);
-  const setup = useMemo(() => ({ ...dateSetup, viewMode }), [dateSetup, viewMode]);
+  const viewMode = dateSetup.viewMode;
+  const cells = useMemo(
+    () => getCalendarCells(axis, viewMode),
+    [axis, viewMode]
+  );
+  const setup = dateSetup;
   const half = distances.headerHeight * .5;
   return <div className={styles.calendarMain} style={{ width: fullSvgWidth }}>
     <svg xmlns="http://www.w3.org/2000/svg" width={fullSvgWidth} height={distances.headerHeight} fontFamily={fontFamily}>
