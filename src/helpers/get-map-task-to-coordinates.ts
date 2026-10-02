@@ -4,17 +4,15 @@ import {
   TaskToRowIndexMap,
   TaskCoordinates,
   TaskOrEmpty,
-  ViewMode,
   Task,
 } from "../types/public-types";
-
-import { progressWithByParams, taskXCoordinate } from "./bar-helper";
+import { progressWithByParams } from "./bar-helper";
+import { TimelineAxis, dateToX } from "./timeline-axis";
 
 export const countTaskCoordinates = (
   task: Task,
   taskToRowIndexMap: TaskToRowIndexMap,
-  startDate: Date,
-  viewMode: ViewMode,
+  axis: TimelineAxis,
   rtl: boolean,
   fullRowHeight: number,
   taskHeight: number,
@@ -39,12 +37,12 @@ export const countTaskCoordinates = (
   }
 
   const x1 = rtl
-    ? svgWidth - taskXCoordinate(task.end, startDate, viewMode, columnWidth)
-    : taskXCoordinate(task.start, startDate, viewMode, columnWidth);
+    ? svgWidth - dateToX(axis, task.end)
+    : dateToX(axis, task.start);
 
   const x2 = rtl
-    ? svgWidth - taskXCoordinate(task.start, startDate, viewMode, columnWidth)
-    : taskXCoordinate(task.end, startDate, viewMode, columnWidth);
+    ? svgWidth - dateToX(axis, task.start)
+    : dateToX(axis, task.end);
 
   const levelY = rowIndex * fullRowHeight + rowHeight * (comparisonLevel - 1);
 
@@ -89,8 +87,7 @@ export const getMapTaskToCoordinates = (
   tasks: readonly TaskOrEmpty[],
   visibleTasksMirror: Readonly<Record<string, true>>,
   taskToRowIndexMap: TaskToRowIndexMap,
-  startDate: Date,
-  viewMode: ViewMode,
+  axis: TimelineAxis,
   rtl: boolean,
   fullRowHeight: number,
   taskHeight: number,
@@ -114,8 +111,7 @@ export const getMapTaskToCoordinates = (
     const taskCoordinates = countTaskCoordinates(
       task,
       taskToRowIndexMap,
-      startDate,
-      viewMode,
+      axis,
       rtl,
       fullRowHeight,
       taskHeight,
