@@ -464,6 +464,8 @@ export interface DisplayOption {
    * Percentage of the task-fit time range to display. At 100 all visible
    * tasks fit in the chart with 5% space before and 15% space after them.
    * Values above 100 enlarge the timeline and enable horizontal scrolling.
+   * Zooming out may use a coarser effective calendar ViewMode so columns keep
+   * their configured minimum width.
    */
   zoomLevel?: number;
   viewMode?: ViewMode;

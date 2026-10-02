@@ -69,7 +69,10 @@ import {
   dateToX,
   xToDate,
 } from "../../helpers/timeline-axis";
-import { getCalendarCells } from "../../helpers/calendar-cells";
+import {
+  getCalendarViewModeForZoom,
+  getMinimumCalendarZoom,
+} from "../../helpers/calendar-cells";
 import { useGetTaskCurrentState } from "./use-get-task-current-state";
 import { useSelection } from "./use-selection";
 import { defaultCheckIsHoliday } from "./default-check-is-holiday";
@@ -460,22 +463,62 @@ export const Gantt: React.FC<GanttProps> = ({
   );
   const svgClientWidth = renderedColumnIndexes && renderedColumnIndexes[4];
   const viewportWidth = Math.max(1, svgClientWidth || 1000);
+  const [axisOffsetMs, setAxisOffsetMs] = useState(0);
+  const requestedZoomLevel = Math.max(
+    1,
+    Number.isFinite(zoomLevel) ? zoomLevel : 100
+  );
+  // Calendar density depends on the task-fit scale, not on the temporary
+  // pan offset used to keep the date under the mouse while zooming.
+  const axisAt100Percent = useMemo(() => {
+    return createTimelineAxis(visibleTasks, viewportWidth, 100);
+  }, [viewportWidth, visibleTasks]);
+  const [calendarViewMode, setCalendarViewMode] = useState(viewMode);
+  const previousRequestedViewModeRef = useRef(viewMode);
+  const previousRequestedZoomRef = useRef(requestedZoomLevel);
+
+  useLayoutEffect(() => {
+    const isViewModeChanged =
+      previousRequestedViewModeRef.current !== viewMode;
+    const isZoomChanged =
+      previousRequestedZoomRef.current !== requestedZoomLevel;
+
+    if (isViewModeChanged) {
+      setCalendarViewMode(viewMode);
+    } else if (isZoomChanged) {
+      setCalendarViewMode(
+        getCalendarViewModeForZoom(
+          axisAt100Percent,
+          viewMode,
+          requestedZoomLevel,
+          distances.columnWidth
+        )
+      );
+    }
+
+    previousRequestedViewModeRef.current = viewMode;
+    previousRequestedZoomRef.current = requestedZoomLevel;
+  }, [
+    axisAt100Percent,
+    distances.columnWidth,
+    requestedZoomLevel,
+    viewMode,
+  ]);
+
   const effectiveZoomLevel = useMemo(() => {
-    const requested = Math.max(1, Number.isFinite(zoomLevel) ? zoomLevel : 100);
-    const tentativeWidth = viewportWidth * Math.max(1, requested / 100);
-    const tentativeAxis = createTimelineAxis(
-      visibleTasks,
-      tentativeWidth,
-      Math.min(100, requested)
+    const minimumZoom = getMinimumCalendarZoom(
+      axisAt100Percent,
+      calendarViewMode,
+      distances.columnWidth
     );
-    const calendar = getCalendarCells(tentativeAxis, viewMode, distances.columnWidth);
-    if (requested > 100 || calendar.viewMode !== ViewMode.Year) return requested;
-    const completeCells = calendar.cells.filter(cell => cell.end <= tentativeAxis.endDate);
-    const narrowest = Math.min(...completeCells.map(cell => cell.width));
-    return Number.isFinite(narrowest) && narrowest > 0
-      ? Math.min(100, Math.max(requested, requested * distances.columnWidth / narrowest))
-      : requested;
-  }, [distances.columnWidth, viewportWidth, viewMode, visibleTasks, zoomLevel]);
+
+    return Math.max(requestedZoomLevel, minimumZoom);
+  }, [
+    axisAt100Percent,
+    calendarViewMode,
+    distances.columnWidth,
+    requestedZoomLevel,
+  ]);
   const svgWidth = viewportWidth * Math.max(1, effectiveZoomLevel / 100);
   const baseAxis = useMemo(
     () =>
@@ -486,7 +529,6 @@ export const Gantt: React.FC<GanttProps> = ({
       ),
     [effectiveZoomLevel, visibleTasks, svgWidth]
   );
-  const [axisOffsetMs, setAxisOffsetMs] = useState(0);
   const axis = useMemo(
     () => ({
       ...baseAxis,
@@ -498,6 +540,7 @@ export const Gantt: React.FC<GanttProps> = ({
   const previousAxisRef = useRef(axis);
   const previousZoomLevelRef = useRef(effectiveZoomLevel);
   const pendingZoomAnchorRef = useRef<{
+    correctionCount: number;
     date: Date;
     viewportX: number;
   } | null>(null);
@@ -513,6 +556,7 @@ export const Gantt: React.FC<GanttProps> = ({
     if (previousZoomLevelRef.current !== effectiveZoomLevel) {
       const anchorX = zoomAnchorXRef.current ?? root.clientWidth / 2;
       pendingZoomAnchorRef.current = {
+        correctionCount: 0,
         date: xToDate(
           previousAxisRef.current,
           root.scrollLeft + anchorX
@@ -530,7 +574,11 @@ export const Gantt: React.FC<GanttProps> = ({
       const nextScroll = Math.min(maximumScroll, Math.max(0, requestedScroll));
       const residualPixels = requestedScroll - nextScroll;
 
-      if (Math.abs(residualPixels) > 0.5) {
+      if (
+        Math.abs(residualPixels) > 0.5 &&
+        pendingAnchor.correctionCount < 3
+      ) {
+        pendingAnchor.correctionCount++;
         setAxisOffsetMs(
           current => current + residualPixels / axis.pixelsPerMillisecond
         );
@@ -577,6 +625,10 @@ export const Gantt: React.FC<GanttProps> = ({
       viewMode,
     }),
     [dateFormats, dateLocale, isUnknownDates, preStepsCount, viewMode]
+  );
+  const calendarDateSetup = useMemo<DateSetup>(
+    () => ({ ...dateSetup, viewMode: calendarViewMode }),
+    [calendarViewMode, dateSetup]
   );
 
   const { checkIsHoliday, adjustTaskToWorkingDates } = useHolidays({
@@ -1789,9 +1841,8 @@ export const Gantt: React.FC<GanttProps> = ({
   const gridProps: GridProps = {
     axis,
     ganttFullHeight,
-    columnWidth: distances.columnWidth,
     isUnknownDates,
-    dateSetup,
+    dateSetup: calendarDateSetup,
     todayColor: colorStyles.todayColor,
     holidayBackgroundColor: colorStyles.holidayBackgroundColor,
     checkIsHoliday,
@@ -1800,7 +1851,7 @@ export const Gantt: React.FC<GanttProps> = ({
   const calendarProps: CalendarProps = useMemo(
     () => ({
       axis,
-      dateSetup,
+      dateSetup: calendarDateSetup,
       distances,
       fontFamily,
       fontSize,
@@ -1811,7 +1862,7 @@ export const Gantt: React.FC<GanttProps> = ({
     }),
     [
       axis,
-      dateSetup,
+      calendarDateSetup,
       distances,
       fontFamily,
       fontSize,

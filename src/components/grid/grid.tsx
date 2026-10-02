@@ -5,7 +5,6 @@ import { getCalendarCells } from "../../helpers/calendar-cells";
 
 export type GridProps = {
   axis: TimelineAxis;
-  columnWidth: number;
   ganttFullHeight: number;
   dateSetup: DateSetup;
   isUnknownDates: boolean;
@@ -14,8 +13,12 @@ export type GridProps = {
   checkIsHoliday: (date: Date, dateExtremity: DateExtremity) => boolean;
 };
 
-export const Grid: React.FC<GridProps> = ({ axis, columnWidth, ganttFullHeight, dateSetup, isUnknownDates, todayColor, holidayBackgroundColor, checkIsHoliday }) => {
-  const { cells, viewMode } = useMemo(() => getCalendarCells(axis, dateSetup.viewMode, columnWidth), [axis, dateSetup.viewMode, columnWidth]);
+export const Grid: React.FC<GridProps> = ({ axis, ganttFullHeight, dateSetup, isUnknownDates, todayColor, holidayBackgroundColor, checkIsHoliday }) => {
+  const viewMode = dateSetup.viewMode;
+  const cells = useMemo(
+    () => getCalendarCells(axis, viewMode),
+    [axis, viewMode]
+  );
   const todayX = dateToX(axis, new Date());
   const holidayModes = new Set([ViewMode.Day, ViewMode.HalfDay, ViewMode.QuarterDay, ViewMode.Hour]);
   return <g className="grid">
