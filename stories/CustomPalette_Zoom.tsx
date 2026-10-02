@@ -21,7 +21,6 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import IconButton from "@mui/material/IconButton";
-import "../dist/style.css";
 import styles from "./CustomPalette_Zoom.module.css";
 
 export const CustomPalette_Zoom: React.FC = props => {

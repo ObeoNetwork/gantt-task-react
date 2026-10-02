@@ -1,4 +1,6 @@
+import endOfISOWeek from "date-fns/endOfISOWeek";
 import format from "date-fns/format";
+import startOfISOWeek from "date-fns/startOfISOWeek";
 
 import { getWeekNumberISO8601 } from "../../helpers/date-helper";
 import { DateSetup, ViewMode } from "../../types/public-types";
@@ -23,6 +25,19 @@ const getMonthText = (date: Date, dateSetup: DateSetup) => {
   }
 };
 
+const getWeekText = (date: Date, dateSetup: DateSetup) => {
+  const weekStart = startOfISOWeek(date);
+  const weekEnd = endOfISOWeek(date);
+  const startMonth = getMonthText(weekStart, dateSetup);
+  const endMonth = getMonthText(weekEnd, dateSetup);
+  const months =
+    weekStart.getMonth() === weekEnd.getMonth()
+      ? startMonth
+      : `${startMonth}, ${endMonth}`;
+
+  return `W${getWeekNumberISO8601(date)}, ${months}`;
+};
+
 export const defaultRenderTopHeader = (
   date: Date,
   viewMode: ViewMode,
@@ -38,10 +53,7 @@ export const defaultRenderTopHeader = (
 
     case ViewMode.Day:
     case ViewMode.TwoDays:
-      return `W${getWeekNumberISO8601(date)}, ${getMonthText(
-        date,
-        dateSetup
-      )}`;
+      return getWeekText(date, dateSetup);
 
     case ViewMode.QuarterDay:
     case ViewMode.HalfDay:
