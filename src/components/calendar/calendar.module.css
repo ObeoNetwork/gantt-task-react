@@ -18,6 +18,11 @@
   stroke: #e6e4e4;
 }
 
+.calendarTimeSeparator {
+  stroke: #ebeff2;
+  stroke-width: 3px;
+}
+
 .calendarTopText {
   text-anchor: middle;
   fill: #555;
