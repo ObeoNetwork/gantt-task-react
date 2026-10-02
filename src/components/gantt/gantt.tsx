@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -63,7 +64,11 @@ import { useOptimizedList } from "../../helpers/use-optimized-list";
 import { useVerticalScrollbars } from "./use-vertical-scrollbars";
 import { useHorizontalScrollbars } from "./use-horizontal-scrollbars";
 
-import { createTimelineAxis, dateToX } from "../../helpers/timeline-axis";
+import {
+  createTimelineAxis,
+  dateToX,
+  xToDate,
+} from "../../helpers/timeline-axis";
 import { getCalendarCells } from "../../helpers/calendar-cells";
 import { useGetTaskCurrentState } from "./use-get-task-current-state";
 import { useSelection } from "./use-selection";
@@ -234,6 +239,7 @@ export const Gantt: React.FC<GanttProps> = ({
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
+  const zoomAnchorXRef = useRef<number | null>(null);
 
   const { contextMenu, handleCloseContextMenu, handleOpenContextMenu } =
     useContextMenu(wrapperRef);
@@ -453,21 +459,100 @@ export const Gantt: React.FC<GanttProps> = ({
     distances.columnWidth
   );
   const svgClientWidth = renderedColumnIndexes && renderedColumnIndexes[4];
-  const svgWidth = Math.max(1, svgClientWidth || 1000);
+  const viewportWidth = Math.max(1, svgClientWidth || 1000);
   const effectiveZoomLevel = useMemo(() => {
-    const requested = Math.min(100, Math.max(1, Number.isFinite(zoomLevel) ? zoomLevel : 100));
-    const tentativeAxis = createTimelineAxis(visibleTasks, svgWidth, requested);
+    const requested = Math.max(1, Number.isFinite(zoomLevel) ? zoomLevel : 100);
+    const tentativeWidth = viewportWidth * Math.max(1, requested / 100);
+    const tentativeAxis = createTimelineAxis(
+      visibleTasks,
+      tentativeWidth,
+      Math.min(100, requested)
+    );
     const calendar = getCalendarCells(tentativeAxis, viewMode, distances.columnWidth);
-    if (calendar.viewMode !== ViewMode.Year) return requested;
+    if (requested > 100 || calendar.viewMode !== ViewMode.Year) return requested;
     const completeCells = calendar.cells.filter(cell => cell.end <= tentativeAxis.endDate);
     const narrowest = Math.min(...completeCells.map(cell => cell.width));
     return Number.isFinite(narrowest) && narrowest > 0
       ? Math.min(100, Math.max(requested, requested * distances.columnWidth / narrowest))
       : requested;
-  }, [distances.columnWidth, svgWidth, viewMode, visibleTasks, zoomLevel]);
-  const axis = useMemo(
-    () => createTimelineAxis(visibleTasks, svgWidth, effectiveZoomLevel),
+  }, [distances.columnWidth, viewportWidth, viewMode, visibleTasks, zoomLevel]);
+  const svgWidth = viewportWidth * Math.max(1, effectiveZoomLevel / 100);
+  const baseAxis = useMemo(
+    () =>
+      createTimelineAxis(
+        visibleTasks,
+        svgWidth,
+        Math.min(100, effectiveZoomLevel)
+      ),
     [effectiveZoomLevel, visibleTasks, svgWidth]
+  );
+  const [axisOffsetMs, setAxisOffsetMs] = useState(0);
+  const axis = useMemo(
+    () => ({
+      ...baseAxis,
+      startDate: new Date(baseAxis.startDate.getTime() + axisOffsetMs),
+      endDate: new Date(baseAxis.endDate.getTime() + axisOffsetMs),
+    }),
+    [axisOffsetMs, baseAxis]
+  );
+  const previousAxisRef = useRef(axis);
+  const previousZoomLevelRef = useRef(effectiveZoomLevel);
+  const pendingZoomAnchorRef = useRef<{
+    date: Date;
+    viewportX: number;
+  } | null>(null);
+
+  useLayoutEffect(() => {
+    const root = ganttTaskRootRef.current;
+    if (!root) {
+      previousAxisRef.current = axis;
+      previousZoomLevelRef.current = effectiveZoomLevel;
+      return;
+    }
+
+    if (previousZoomLevelRef.current !== effectiveZoomLevel) {
+      const anchorX = zoomAnchorXRef.current ?? root.clientWidth / 2;
+      pendingZoomAnchorRef.current = {
+        date: xToDate(
+          previousAxisRef.current,
+          root.scrollLeft + anchorX
+        ),
+        viewportX: anchorX,
+      };
+      previousZoomLevelRef.current = effectiveZoomLevel;
+    }
+
+    const pendingAnchor = pendingZoomAnchorRef.current;
+    if (pendingAnchor) {
+      const requestedScroll =
+        dateToX(axis, pendingAnchor.date) - pendingAnchor.viewportX;
+      const maximumScroll = Math.max(0, axis.width - root.clientWidth);
+      const nextScroll = Math.min(maximumScroll, Math.max(0, requestedScroll));
+      const residualPixels = requestedScroll - nextScroll;
+
+      if (Math.abs(residualPixels) > 0.5) {
+        setAxisOffsetMs(
+          current => current + residualPixels / axis.pixelsPerMillisecond
+        );
+        return;
+      }
+
+      setScrollXProgrammatically(nextScroll);
+      pendingZoomAnchorRef.current = null;
+    }
+
+    previousAxisRef.current = axis;
+  }, [axis, effectiveZoomLevel, ganttTaskRootRef, setScrollXProgrammatically]);
+
+  const handleZoomPointerMove = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      zoomAnchorXRef.current = Math.min(
+        event.currentTarget.clientWidth,
+        Math.max(0, event.clientX - bounds.left)
+      );
+    },
+    []
   );
   const { startDate } = axis;
   const minTaskDate = useMemo(() => {
@@ -646,6 +731,14 @@ export const Gantt: React.FC<GanttProps> = ({
   // scroll events
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
+      const ganttRoot = ganttTaskRootRef.current;
+      if (ganttRoot) {
+        const bounds = ganttRoot.getBoundingClientRect();
+        zoomAnchorXRef.current = Math.min(
+          ganttRoot.clientWidth,
+          Math.max(0, event.clientX - bounds.left)
+        );
+      }
       if (onWheel) {
         onWheel(event);
       }
@@ -667,7 +760,7 @@ export const Gantt: React.FC<GanttProps> = ({
         wrapperNode.removeEventListener("wheel", handleWheel);
       }
     };
-  }, [wrapperRef, onWheel]);
+  }, [ganttTaskRootRef, wrapperRef, onWheel]);
 
   /**
    * Handles arrow keys events and transform it to new scroll
@@ -1906,6 +1999,7 @@ export const Gantt: React.FC<GanttProps> = ({
         ganttTaskContentRef={ganttTaskContentRef}
         onVerticalScrollbarScrollX={onVerticalScrollbarScrollX}
         ganttTaskRootRef={ganttTaskRootRef}
+        onPointerMove={handleZoomPointerMove}
         onScrollGanttContentVertically={onScrollVertically}
       />
 

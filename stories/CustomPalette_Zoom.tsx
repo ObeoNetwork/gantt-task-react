@@ -26,8 +26,14 @@ import styles from "./CustomPalette_Zoom.module.css";
 
 export const CustomPalette_Zoom: React.FC = props => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initTasks());
-  const [viewMode] = React.useState<ViewMode>(ViewMode.Day);
+  const [viewMode, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [zoomLevel, setZoomLevel] = React.useState(100);
+
+  const handleViewModeChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setView(event.target.value as ViewMode);
+  };
 
   const onChangeTasks = useCallback<OnChangeTasks>(
     (newTaskOrEmptys, action) => {
@@ -117,7 +123,7 @@ export const CustomPalette_Zoom: React.FC = props => {
       const deltaY = wheelEvent.deltaY;
 
       setZoomLevel(current =>
-        Math.max(1, Math.min(100, current + (deltaY < 0 ? 10 : -10)))
+        Math.max(1, Math.min(400, current + (deltaY < 0 ? 10 : -10)))
       );
     }
   };
@@ -476,25 +482,37 @@ export const CustomPalette_Zoom: React.FC = props => {
   };
 
   return (
-    <Gantt
-      {...props}
-      onAddTask={onAddTask}
-      onChangeTasks={onChangeTasks}
-      onDoubleClick={handleDblClick}
-      onEditTask={onEditTask}
-      onTaskClick={handleClick}
-      onTaskContextMenu={handleClick}
-      tasks={tasks}
-      viewMode={viewMode}
-      zoomLevel={zoomLevel}
-      roundDate={roundDate}
-      ContextualPalette={ContextualPalette}
-      TaskDependencyContextualPalette={DependencyContextualPalette}
-      onWheel={handleWheel}
-      onChangeExpandState={onChangeExpandState}
-      checkIsHoliday={checkIsHoliday}
-      dateMoveStep={dateMoveStep}
-      // isAdjustToWorkingDates={false}
-    />
+    <>
+      <div className={styles.controls}>
+        <label htmlFor="view-mode">View mode</label>
+        <select id="view-mode" value={viewMode} onChange={handleViewModeChange}>
+          {Object.values(ViewMode).map(mode => (
+            <option key={mode} value={mode}>
+              {mode}
+            </option>
+          ))}
+        </select>
+      </div>
+      <Gantt
+        {...props}
+        onAddTask={onAddTask}
+        onChangeTasks={onChangeTasks}
+        onDoubleClick={handleDblClick}
+        onEditTask={onEditTask}
+        onTaskClick={handleClick}
+        onTaskContextMenu={handleClick}
+        tasks={tasks}
+        viewMode={viewMode}
+        zoomLevel={zoomLevel}
+        roundDate={roundDate}
+        ContextualPalette={ContextualPalette}
+        TaskDependencyContextualPalette={DependencyContextualPalette}
+        onWheel={handleWheel}
+        onChangeExpandState={onChangeExpandState}
+        checkIsHoliday={checkIsHoliday}
+        dateMoveStep={dateMoveStep}
+        // isAdjustToWorkingDates={false}
+      />
+    </>
   );
 };

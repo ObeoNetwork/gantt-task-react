@@ -28,6 +28,7 @@ export type TaskGanttProps = {
   ganttTaskContentRef: RefObject<HTMLDivElement>;
   onVerticalScrollbarScrollX: (event: SyntheticEvent<HTMLDivElement>) => void;
   ganttTaskRootRef: RefObject<HTMLDivElement>;
+  onPointerMove: React.PointerEventHandler<HTMLDivElement>;
   onScrollGanttContentVertically: (
     event: SyntheticEvent<HTMLDivElement>
   ) => void;
@@ -46,6 +47,7 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
   ganttTaskContentRef,
   onVerticalScrollbarScrollX,
   ganttTaskRootRef,
+  onPointerMove,
   onScrollGanttContentVertically: onScrollVertically,
 }) => {
   const containerStyle: CSSProperties = {
@@ -201,6 +203,7 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
       className={styles.ganttTaskRoot}
       ref={ganttTaskRootRef}
       onScroll={onVerticalScrollbarScrollX}
+      onPointerMove={onPointerMove}
       dir="ltr"
     >
       <Calendar {...calendarProps} />
