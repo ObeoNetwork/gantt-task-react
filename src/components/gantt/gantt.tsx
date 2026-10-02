@@ -2022,7 +2022,7 @@ export const Gantt: React.FC<GanttProps> = ({
       ref={wrapperRef}
       data-testid={`gantt-main`}
       style={{
-        gridTemplateColumns: `${displayTable ? "max-content" : ""} auto`,
+        gridTemplateColumns: `${displayTable ? "max-content " : ""}minmax(0, 1fr)`,
       }}
     >
       {/* {columns.length > 0 && <TaskList {...tableProps} />} */}
