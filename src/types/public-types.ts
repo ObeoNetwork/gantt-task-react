@@ -460,6 +460,11 @@ export interface EventOption {
 }
 
 export interface DisplayOption {
+  /**
+   * Percentage of the task-fit time range to display. At 100 all visible
+   * tasks fit in the chart with 5% space before and 15% space after them.
+   */
+  zoomLevel?: number;
   viewMode?: ViewMode;
   isDeleteDependencyOnDoubleClick?: boolean;
   /**

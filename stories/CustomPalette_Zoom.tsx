@@ -4,6 +4,7 @@ import {
   BarMoveAction,
   ColumnProps,
   DateExtremity,
+  DateSetup,
   Gantt,
   GanttDateRoundingTimeUnit,
   OnChangeTasks,
@@ -16,16 +17,17 @@ import {
 
 import { initTasks, onAddTask, onEditTask } from "./helper";
 
-import "../dist/style.css";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import IconButton from "@mui/material/IconButton";
+import "../dist/style.css";
 import styles from "./CustomPalette_Zoom.module.css";
 
 export const CustomPalette_Zoom: React.FC = props => {
   const [tasks, setTasks] = useState<readonly TaskOrEmpty[]>(initTasks());
-  const [viewMode, setView] = React.useState<ViewMode>(ViewMode.Day);
+  const [viewMode] = React.useState<ViewMode>(ViewMode.Day);
+  const [zoomLevel, setZoomLevel] = React.useState(100);
 
   const onChangeTasks = useCallback<OnChangeTasks>(
     (newTaskOrEmptys, action) => {
@@ -114,19 +116,9 @@ export const CustomPalette_Zoom: React.FC = props => {
       wheelEvent.preventDefault();
       const deltaY = wheelEvent.deltaY;
 
-      if (deltaY < 0 && viewMode !== ViewMode.Hour) {
-        const currentIndex = Object.values(ViewMode).indexOf(viewMode);
-        const newZoomLevel = Object.values(ViewMode)[currentIndex - 1];
-        if (newZoomLevel) {
-          setView(newZoomLevel);
-        }
-      } else if (deltaY > 0 && viewMode !== ViewMode.Month) {
-        const currentIndex = Object.values(ViewMode).indexOf(viewMode);
-        const newZoomLevel = Object.values(ViewMode)[currentIndex + 1];
-        if (newZoomLevel) {
-          setView(newZoomLevel);
-        }
-      }
+      setZoomLevel(current =>
+        Math.max(1, Math.min(100, current + (deltaY < 0 ? 10 : -10)))
+      );
     }
   };
 
@@ -175,7 +167,7 @@ export const CustomPalette_Zoom: React.FC = props => {
     onClose: () => any
   ) => {
     const newTasks = tasks.map(t => {
-      if (t => t.id == taskTo.id) {
+      if (t.id == taskTo.id) {
         const dependenciesToKeep = taskTo.dependencies?.filter(dependency => {
           const isDependencyToRemove =
             dependency.sourceId == taskFrom.id &&
@@ -459,7 +451,12 @@ export const CustomPalette_Zoom: React.FC = props => {
     return newdate;
   };
 
-  const checkIsHoliday = (date: Date, _, __, dateExtremity: DateExtremity) => {
+  const checkIsHoliday = (
+    date: Date,
+    _minTaskDate: Date,
+    _dateSetup: DateSetup,
+    dateExtremity: DateExtremity
+  ) => {
     const day = date.getDay();
 
     let isHoliday = false;
@@ -489,6 +486,7 @@ export const CustomPalette_Zoom: React.FC = props => {
       onTaskContextMenu={handleClick}
       tasks={tasks}
       viewMode={viewMode}
+      zoomLevel={zoomLevel}
       roundDate={roundDate}
       ContextualPalette={ContextualPalette}
       TaskDependencyContextualPalette={DependencyContextualPalette}

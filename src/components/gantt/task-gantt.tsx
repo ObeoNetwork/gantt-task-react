@@ -62,12 +62,9 @@ const TaskGanttInner: React.FC<TaskGanttProps> = ({
     () => ({
       height: Math.max(ganttFullHeight, minimumRowDisplayed * rowHeight),
       width: fullSvgWidth,
-      backgroundSize: `${columnWidth}px ${fullRowHeight * 2}px`,
+      backgroundSize: `100% ${fullRowHeight * 2}px`,
       backgroundPositionX: additionalLeftSpace || undefined,
-      backgroundImage: [
-        `linear-gradient(to right, #ebeff2 1px, transparent 2px)`,
-        `linear-gradient(to bottom, transparent ${fullRowHeight}px, #f5f5f5 ${fullRowHeight}px)`,
-      ].join(", "),
+      backgroundImage: `linear-gradient(to bottom, transparent ${fullRowHeight}px, #f5f5f5 ${fullRowHeight}px)`,
     }),
     [
       additionalLeftSpace,

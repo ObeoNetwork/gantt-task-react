@@ -1,82 +1,26 @@
-import React, { ReactNode, useMemo } from "react";
-import { GridBody, GridBodyProps } from "./grid-body";
-import { ViewMode } from "../../types/public-types";
-import { differenceInDays } from "date-fns";
+import React, { useMemo } from "react";
+import { DateExtremity, DateSetup, ViewMode } from "../../types/public-types";
+import { TimelineAxis, dateToX } from "../../helpers/timeline-axis";
+import { getCalendarCells } from "../../helpers/calendar-cells";
 
-export type GridProps = GridBodyProps;
-export const Grid: React.FC<GridProps> = props => {
-  const {
-    viewMode,
-    isUnknownDates,
-    startColumnIndex,
-    endColumnIndex,
-    additionalLeftSpace,
-    columnWidth,
-    getDate,
-    checkIsHoliday,
-    holidayBackgroundColor,
-    minTaskDate,
-  } = props;
+export type GridProps = {
+  axis: TimelineAxis;
+  columnWidth: number;
+  ganttFullHeight: number;
+  dateSetup: DateSetup;
+  isUnknownDates: boolean;
+  todayColor: string;
+  holidayBackgroundColor: string;
+  checkIsHoliday: (date: Date, dateExtremity: DateExtremity) => boolean;
+};
 
-  const viewModesForDetectHolidays = new Set([
-    ViewMode.Day,
-    ViewMode.HalfDay,
-    ViewMode.QuarterDay,
-    ViewMode.Hour,
-  ]);
-
-  const displayHoliday = (date: Date, minTaskDate: Date) => {
-    if (isUnknownDates) {
-      const daysDiff = differenceInDays(date, minTaskDate);
-      const rest = daysDiff % 7;
-
-      if (daysDiff >= 0) {
-        return rest === 5 || rest === 6;
-      }
-
-      return rest === -1 || rest === -2;
-    }
-
-    return checkIsHoliday(date, "startOfTask");
-  };
-
-  const renderedHolidays = useMemo(() => {
-    const res: ReactNode[] = [];
-    if (viewModesForDetectHolidays.has(viewMode)) {
-      for (let i = startColumnIndex; i <= endColumnIndex; ++i) {
-        const date = getDate(i);
-
-        if (displayHoliday(date, minTaskDate)) {
-          res.push(
-            <rect
-              height="100%"
-              width={columnWidth}
-              x={additionalLeftSpace + i * columnWidth}
-              y={0}
-              fill={holidayBackgroundColor}
-              key={i}
-            />
-          );
-        }
-      }
-    }
-
-    return res;
-  }, [
-    viewMode,
-    additionalLeftSpace,
-    checkIsHoliday,
-    columnWidth,
-    startColumnIndex,
-    endColumnIndex,
-    getDate,
-    holidayBackgroundColor,
-  ]);
-
-  return (
-    <g className="grid">
-      {renderedHolidays}
-      <GridBody {...props} />
-    </g>
-  );
+export const Grid: React.FC<GridProps> = ({ axis, columnWidth, ganttFullHeight, dateSetup, isUnknownDates, todayColor, holidayBackgroundColor, checkIsHoliday }) => {
+  const { cells, viewMode } = useMemo(() => getCalendarCells(axis, dateSetup.viewMode, columnWidth), [axis, dateSetup.viewMode, columnWidth]);
+  const todayX = dateToX(axis, new Date());
+  const holidayModes = new Set([ViewMode.Day, ViewMode.HalfDay, ViewMode.QuarterDay, ViewMode.Hour]);
+  return <g className="grid">
+    {holidayModes.has(viewMode) && !isUnknownDates && cells.filter(cell => checkIsHoliday(cell.start, "startOfTask")).map(cell => <rect key={`holiday-${cell.start.getTime()}`} x={cell.x} y={0} width={cell.width} height="100%" fill={holidayBackgroundColor} />)}
+    {cells.map(cell => <line key={`grid-${cell.start.getTime()}`} x1={cell.x} x2={cell.x} y1={0} y2={ganttFullHeight} stroke="#ebeff2" />)}
+    {!isUnknownDates && todayX >= 0 && todayX <= axis.width && <rect x={todayX} y={0} width={1} height={ganttFullHeight} fill={todayColor} />}
+  </g>;
 };

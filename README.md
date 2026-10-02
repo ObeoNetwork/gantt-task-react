@@ -87,7 +87,8 @@ npm start
 
 | Parameter Name      | Type    | Description                                                                                                                             |
 | :------------------ | :------ | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| viewMode            | enum    | Specifies the time scale. Hour, Quarter Day, Half Day, Day, Week(ISO-8601, 1st day is Monday), Month, Year.                             |
+| viewMode            | enum    | Specifies Calendar column presentation. Hour, Quarter Day, Half Day, Day, Week(ISO-8601, 1st day is Monday), Month, Year.               |
+| zoomLevel           | number  | Task timeline zoom percentage (1–100). At 100, visible tasks fit with 5% space before and 15% after.                                    |
 | viewDate            | date    | Specifies display date and time for display.                                                                                            |
 | preStepsCount       | number  | Specifies empty space before the fist task                                                                                              |
 | locale              | string  | Specifies the month name language. Able formats: ISO 639-2, Java Locale.                                                                |
@@ -100,27 +101,27 @@ npm start
 
 ### StylingOption
 
-| Parameter Name             | Type   | Description                                                             |
-| :------------------------- | :----- | :---------------------------------------------------------------------- |
-| headerHeight               | number | Specifies the header height.                                            |
-| columnWidth                | number | Specifies the time period width.                                        |
-| listCellWidth              | string | Specifies the task list cell width. Empty string is mean "no display".  |
-| rowHeight                  | number | Specifies the task row height.                                          |
-| barCornerRadius            | number | Specifies the taskbar corner rounding.                                  |
-| barFill                    | number | Specifies the taskbar occupation. Sets in percent from 0 to 100.        |
-| handleWidth                | number | Specifies width the taskbar drag event control for start and end dates. |
-| fontFamily                 | string | Specifies the application font.                                         |
-| fontSize                   | string | Specifies the application font size.                                    |
-| barProgressColor           | string | Specifies the taskbar progress fill color globally.                     |
-| barProgressSelectedColor   | string | Specifies the taskbar progress fill color globally on select.           |
-| barBackgroundColor         | string | Specifies the taskbar background fill color globally.                   |
-| barBackgroundSelectedColor | string | Specifies the taskbar background fill color globally on select.         |
-| arrowColor                 | string | Specifies the relationship arrow fill color.                            |
-| arrowIndent                | number | Specifies the relationship arrow right indent. Sets in px               |
-| todayColor                 | string | Specifies the current period column fill color.                         |
-| TooltipContent             |        | Specifies the Tooltip view for selected taskbar.                        |
-| TaskListHeader             |        | Specifies the task list Header view                                     |
-| TaskListTable              |        | Specifies the task list Table view                                      |
+| Parameter Name             | Type   | Description                                                                               |
+| :------------------------- | :----- | :---------------------------------------------------------------------------------------- |
+| headerHeight               | number | Specifies the header height.                                                              |
+| columnWidth                | number | Minimum Calendar column width; Calendar automatically selects a coarser mode when needed. |
+| listCellWidth              | string | Specifies the task list cell width. Empty string is mean "no display".                    |
+| rowHeight                  | number | Specifies the task row height.                                                            |
+| barCornerRadius            | number | Specifies the taskbar corner rounding.                                                    |
+| barFill                    | number | Specifies the taskbar occupation. Sets in percent from 0 to 100.                          |
+| handleWidth                | number | Specifies width the taskbar drag event control for start and end dates.                   |
+| fontFamily                 | string | Specifies the application font.                                                           |
+| fontSize                   | string | Specifies the application font size.                                                      |
+| barProgressColor           | string | Specifies the taskbar progress fill color globally.                                       |
+| barProgressSelectedColor   | string | Specifies the taskbar progress fill color globally on select.                             |
+| barBackgroundColor         | string | Specifies the taskbar background fill color globally.                                     |
+| barBackgroundSelectedColor | string | Specifies the taskbar background fill color globally on select.                           |
+| arrowColor                 | string | Specifies the relationship arrow fill color.                                              |
+| arrowIndent                | number | Specifies the relationship arrow right indent. Sets in px                                 |
+| todayColor                 | string | Specifies the current period column fill color.                                           |
+| TooltipContent             |        | Specifies the Tooltip view for selected taskbar.                                          |
+| TaskListHeader             |        | Specifies the task list Header view                                                       |
+| TaskListTable              |        | Specifies the task list Table view                                                        |
 
 - TooltipContent: [`React.FC<{ task: Task; fontSize: string; fontFamily: string; }>;`](https://github.com/MaTeMaTuK/gantt-task-react/blob/main/src/components/other/tooltip.tsx#L56)
 - TaskListHeader: `React.FC<{ headerHeight: number; rowWidth: string; fontFamily: string; fontSize: string;}>;`
