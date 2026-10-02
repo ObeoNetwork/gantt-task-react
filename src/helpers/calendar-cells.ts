@@ -83,6 +83,19 @@ export const getCalendarCells = (
   return result;
 };
 
+/**
+ * Two-day columns can contain an ISO week boundary. Use daily cells for the
+ * top row so that boundary can be rendered inside the two-day column.
+ */
+export const getCalendarTopHeaderCells = (
+  axis: TimelineAxis,
+  viewMode: ViewMode
+) =>
+  getCalendarCells(
+    axis,
+    viewMode === ViewMode.TwoDays ? ViewMode.Day : viewMode
+  );
+
 /** Minimum zoom percentage needed to render the requested mode at minWidth. */
 export const getMinimumCalendarZoom = (
   axisAt100Percent: TimelineAxis,

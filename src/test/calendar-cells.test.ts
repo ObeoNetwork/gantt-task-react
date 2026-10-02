@@ -1,6 +1,8 @@
+import { describe, expect, test } from "vitest";
 import {
   getCalendarCells,
   getCalendarCellStart,
+  getCalendarTopHeaderCells,
   getCalendarViewModeForZoom,
   getMinimumCalendarZoom,
 } from "../helpers/calendar-cells";
@@ -22,18 +24,37 @@ describe("calendar cells", () => {
     expect(getCalendarCells(axis, ViewMode.Day)).toHaveLength(1);
   });
 
+  test("places a week boundary inside a two-day column", () => {
+    const sunday = new Date(2024, 8, 15);
+    const tuesday = new Date(2024, 8, 17);
+    const twoDayAxis: TimelineAxis = {
+      startDate: sunday,
+      endDate: tuesday,
+      width: 200,
+      pixelsPerMillisecond: 200 / (tuesday.getTime() - sunday.getTime()),
+    };
+
+    const bottomCells = getCalendarCells(twoDayAxis, ViewMode.TwoDays);
+    const topCells = getCalendarTopHeaderCells(twoDayAxis, ViewMode.TwoDays);
+
+    expect(bottomCells).toHaveLength(1);
+    expect(topCells).toHaveLength(2);
+    expect(topCells[1].start).toEqual(new Date(2024, 8, 16));
+    expect(topCells[1].x).toBeCloseTo(bottomCells[0].width / 2);
+  });
+
   test("computes the zoom needed for the minimum column width", () => {
     expect(getMinimumCalendarZoom(axis, ViewMode.Hour, 20)).toBeCloseTo(200);
     expect(getMinimumCalendarZoom(axis, ViewMode.Day, 60)).toBeCloseTo(25);
   });
 
   test("selects a coarser mode when zooming out", () => {
-    expect(
-      getCalendarViewModeForZoom(axis, ViewMode.Hour, 100, 20)
-    ).toBe(ViewMode.QuarterDay);
-    expect(
-      getCalendarViewModeForZoom(axis, ViewMode.Hour, 200, 20)
-    ).toBe(ViewMode.Hour);
+    expect(getCalendarViewModeForZoom(axis, ViewMode.Hour, 100, 20)).toBe(
+      ViewMode.QuarterDay
+    );
+    expect(getCalendarViewModeForZoom(axis, ViewMode.Hour, 200, 20)).toBe(
+      ViewMode.Hour
+    );
   });
 
   test("ignores clipped edge cells when selecting week and month modes", () => {
@@ -43,25 +64,14 @@ describe("calendar cells", () => {
       startDate: rangeStart,
       endDate: rangeEnd,
       width: 750,
-      pixelsPerMillisecond:
-        750 / (rangeEnd.getTime() - rangeStart.getTime()),
+      pixelsPerMillisecond: 750 / (rangeEnd.getTime() - rangeStart.getTime()),
     };
 
     expect(
-      getCalendarViewModeForZoom(
-        rangeAxis,
-        ViewMode.TwoDays,
-        100,
-        60
-      )
+      getCalendarViewModeForZoom(rangeAxis, ViewMode.TwoDays, 100, 60)
     ).toBe(ViewMode.Week);
     expect(
-      getCalendarViewModeForZoom(
-        rangeAxis,
-        ViewMode.TwoDays,
-        50,
-        60
-      )
+      getCalendarViewModeForZoom(rangeAxis, ViewMode.TwoDays, 50, 60)
     ).toBe(ViewMode.Month);
   });
 
@@ -72,18 +82,12 @@ describe("calendar cells", () => {
       startDate: rangeStart,
       endDate: rangeEnd,
       width: 1000,
-      pixelsPerMillisecond:
-        1000 / (rangeEnd.getTime() - rangeStart.getTime()),
+      pixelsPerMillisecond: 1000 / (rangeEnd.getTime() - rangeStart.getTime()),
     };
 
-    expect(
-      getCalendarViewModeForZoom(
-        rangeAxis,
-        ViewMode.Week,
-        5,
-        60
-      )
-    ).toBe(ViewMode.Month);
+    expect(getCalendarViewModeForZoom(rangeAxis, ViewMode.Week, 5, 60)).toBe(
+      ViewMode.Month
+    );
   });
 
   test("aligns cell starts with calendar boundaries", () => {
@@ -140,9 +144,7 @@ describe("calendar cells", () => {
     const cells = getCalendarCells(dstAxis, ViewMode.QuarterDay);
     expect(
       cells.every(
-        cell =>
-          cell.start.getHours() % 6 === 0 &&
-          cell.start.getMinutes() === 0
+        cell => cell.start.getHours() % 6 === 0 && cell.start.getMinutes() === 0
       )
     ).toBe(true);
   });
