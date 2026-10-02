@@ -54,15 +54,15 @@ export const Calendar: React.FC<CalendarProps> = ({ axis, dateSetup, distances, 
       </defs>}
       <g className="calendar" fontSize={fontSize} fontFamily={fontFamily}>
         {topGroups.map((group, index) => <g key={`${group.x}-${index}`}>
-          <line x1={group.x} x2={group.x} y1={0} y2={half} stroke="#ebeff2" />
+          <line className={styles.calendarTimeSeparator} x1={group.x} x2={group.x} y1={0} y2={half} />
           <text className={styles.calendarTopText} x={group.x + group.width / 2} y={half * .8} textAnchor="middle">{group.label}</text>
         </g>)}
-        {lastTopGroup && <line x1={lastTopGroup.x + lastTopGroup.width} x2={lastTopGroup.x + lastTopGroup.width} y1={0} y2={half} stroke="#ebeff2" />}
+        {lastTopGroup && <line className={styles.calendarTimeSeparator} x1={lastTopGroup.x + lastTopGroup.width} x2={lastTopGroup.x + lastTopGroup.width} y1={0} y2={half} />}
         {cells.map((cell, index) => <g key={`${cell.start.getTime()}-${index}`}>
-          <line x1={cell.x} x2={cell.x} y1={half} y2={distances.headerHeight} stroke="#ebeff2" />
+          <line className={styles.calendarTimeSeparator} x1={cell.x} x2={cell.x} y1={half} y2={distances.headerHeight} />
           <text className={styles.calendarBottomText} x={getCalendarBottomLabelX(cell, viewMode)} y={distances.headerHeight * .9} textAnchor={viewMode === ViewMode.TwoDays ? "start" : "middle"} clipPath={viewMode === ViewMode.TwoDays ? `url(#${clipPathPrefix}-bottom-${index})` : undefined}>{renderBottomHeader(cell.start, viewMode, setup, index, isUnknownDates)}</text>
         </g>)}
-        {lastCell && <line x1={lastCell.x + lastCell.width} x2={lastCell.x + lastCell.width} y1={half} y2={distances.headerHeight} stroke="#ebeff2" />}
+        {lastCell && <line className={styles.calendarTimeSeparator} x1={lastCell.x + lastCell.width} x2={lastCell.x + lastCell.width} y1={half} y2={distances.headerHeight} />}
       </g>
     </svg>
   </div>;
