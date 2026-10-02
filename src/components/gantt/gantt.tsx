@@ -9,6 +9,22 @@ import React, {
 
 import enDateLocale from "date-fns/locale/en-US";
 
+import { collectVisibleTasks } from "../../helpers/collect-visible-tasks";
+import { getChildOutOfParentWarnings } from "../../helpers/get-child-out-of-parent-warnings";
+import { getChildsAndRoots } from "../../helpers/get-childs-and-roots";
+import { getCriticalPath } from "../../helpers/get-critical-path";
+import { getDependencyMapAndWarnings } from "../../helpers/get-dependency-map-and-warnings";
+import {
+  countTaskCoordinates as defaultCountTaskCoordinates,
+  getMapTaskToCoordinates,
+} from "../../helpers/get-map-task-to-coordinates";
+import { getMapTaskToGlobalIndex } from "../../helpers/get-map-task-to-global-index";
+import { getMapTaskToNestedIndex } from "../../helpers/get-map-task-to-nested-index";
+import { getMapTaskToRowIndex } from "../../helpers/get-map-task-to-row-index";
+import { getTaskCoordinates as getTaskCoordinatesDefault } from "../../helpers/get-task-coordinates";
+import { getTaskToHasDependencyWarningMap } from "../../helpers/get-task-to-has-dependency-warning-map";
+import { getTasksMap } from "../../helpers/get-tasks-map";
+import { sortTasks } from "../../helpers/sort-tasks";
 import {
   BarMoveAction,
   ChangeAction,
@@ -30,63 +46,47 @@ import {
   TaskOrEmpty,
   ViewMode,
 } from "../../types/public-types";
-import { GridProps } from "../grid/grid";
 import { CalendarProps } from "../calendar/calendar";
-import { TaskGanttContentProps } from "./task-gantt-content";
+import { GridProps } from "../grid/grid";
+import { StandardTooltipContent, Tooltip } from "../other/tooltip";
+import { TaskList, TaskListProps } from "../task-list/task-list";
 import { TaskListHeaderDefault } from "../task-list/task-list-header";
 import { TaskListTableDefault } from "../task-list/task-list-table";
-import { StandardTooltipContent, Tooltip } from "../other/tooltip";
-import { TaskListProps, TaskList } from "../task-list/task-list";
 import { TaskGantt } from "./task-gantt";
-import { sortTasks } from "../../helpers/sort-tasks";
-import { getChildsAndRoots } from "../../helpers/get-childs-and-roots";
-import { getTaskCoordinates as getTaskCoordinatesDefault } from "../../helpers/get-task-coordinates";
-import { getTasksMap } from "../../helpers/get-tasks-map";
-import { getMapTaskToGlobalIndex } from "../../helpers/get-map-task-to-global-index";
-import { getMapTaskToRowIndex } from "../../helpers/get-map-task-to-row-index";
-import { getChildOutOfParentWarnings } from "../../helpers/get-child-out-of-parent-warnings";
-import { getDependencyMapAndWarnings } from "../../helpers/get-dependency-map-and-warnings";
-import {
-  countTaskCoordinates as defaultCountTaskCoordinates,
-  getMapTaskToCoordinates,
-} from "../../helpers/get-map-task-to-coordinates";
-import { getCriticalPath } from "../../helpers/get-critical-path";
-import { getMapTaskToNestedIndex } from "../../helpers/get-map-task-to-nested-index";
-import { collectVisibleTasks } from "../../helpers/collect-visible-tasks";
-import { getTaskToHasDependencyWarningMap } from "../../helpers/get-task-to-has-dependency-warning-map";
+import { TaskGanttContentProps } from "./task-gantt-content";
 
 import { getChangeTaskMetadata } from "../../helpers/get-change-task-metadata";
+import { useTaskTooltip } from "../../helpers/use-task-tooltip";
 import { useCreateRelation } from "./use-create-relation";
 import { useTaskDrag } from "./use-task-drag";
-import { useTaskTooltip } from "../../helpers/use-task-tooltip";
 
 import { useOptimizedList } from "../../helpers/use-optimized-list";
-import { useVerticalScrollbars } from "./use-vertical-scrollbars";
 import { useHorizontalScrollbars } from "./use-horizontal-scrollbars";
+import { useVerticalScrollbars } from "./use-vertical-scrollbars";
 
+import {
+  getCalendarViewModeForZoom,
+  getMinimumCalendarZoom,
+} from "../../helpers/calendar-cells";
 import {
   createTimelineAxis,
   dateToX,
   xToDate,
 } from "../../helpers/timeline-axis";
-import {
-  getCalendarViewModeForZoom,
-  getMinimumCalendarZoom,
-} from "../../helpers/calendar-cells";
+import { defaultCheckIsHoliday } from "./default-check-is-holiday";
 import { useGetTaskCurrentState } from "./use-get-task-current-state";
 import { useSelection } from "./use-selection";
-import { defaultCheckIsHoliday } from "./default-check-is-holiday";
 
-import { useContextMenu } from "./use-context-menu";
 import { ContextMenu } from "../context-menu";
-import { useHandleAction } from "./use-handle-action";
 import { defaultGetCopiedTaskId } from "./default-get-copied-task-id";
+import { useContextMenu } from "./use-context-menu";
+import { useHandleAction } from "./use-handle-action";
 
-import { copyTasks } from "../../helpers/copy-tasks";
 import { copyOption } from "../../context-menu-options/copy";
 import { cutOption } from "../../context-menu-options/cut";
-import { pasteOption } from "../../context-menu-options/paste";
 import { deleteOption } from "../../context-menu-options/delete";
+import { pasteOption } from "../../context-menu-options/paste";
+import { copyTasks } from "../../helpers/copy-tasks";
 
 import { useHolidays } from "./use-holidays";
 
@@ -148,7 +148,7 @@ const defaultDistances: Distances = {
   arrowIndent: 20,
   barCornerRadius: 3,
   barFill: 60,
-  columnWidth: 60,
+  columnWidth: 50,
   contextMenuIconWidth: 20,
   contextMenuOptionHeight: 25,
   contextMenuSidePadding: 10,
@@ -273,14 +273,14 @@ export const Gantt: React.FC<GanttProps> = ({
                 (dateMoveStep.timeUnit === GanttDateRoundingTimeUnit.DAY
                   ? 86400000 * dateMoveStep.value
                   : dateMoveStep.timeUnit === GanttDateRoundingTimeUnit.HOUR
-                    ? 3600000 * dateMoveStep.value
-                    : 60000 * dateMoveStep.value)
+                  ? 3600000 * dateMoveStep.value
+                  : 60000 * dateMoveStep.value)
             ) *
               (dateMoveStep.timeUnit === GanttDateRoundingTimeUnit.DAY
                 ? 86400000 * dateMoveStep.value
                 : dateMoveStep.timeUnit === GanttDateRoundingTimeUnit.HOUR
-                  ? 3600000 * dateMoveStep.value
-                  : 60000 * dateMoveStep.value)
+                ? 3600000 * dateMoveStep.value
+                : 60000 * dateMoveStep.value)
           ),
     [dateMoveStep, roundDateProp, viewMode]
   );
@@ -478,8 +478,7 @@ export const Gantt: React.FC<GanttProps> = ({
   const previousRequestedZoomRef = useRef(requestedZoomLevel);
 
   useLayoutEffect(() => {
-    const isViewModeChanged =
-      previousRequestedViewModeRef.current !== viewMode;
+    const isViewModeChanged = previousRequestedViewModeRef.current !== viewMode;
     const isZoomChanged =
       previousRequestedZoomRef.current !== requestedZoomLevel;
 
@@ -498,12 +497,7 @@ export const Gantt: React.FC<GanttProps> = ({
 
     previousRequestedViewModeRef.current = viewMode;
     previousRequestedZoomRef.current = requestedZoomLevel;
-  }, [
-    axisAt100Percent,
-    distances.columnWidth,
-    requestedZoomLevel,
-    viewMode,
-  ]);
+  }, [axisAt100Percent, distances.columnWidth, requestedZoomLevel, viewMode]);
 
   const effectiveZoomLevel = useMemo(() => {
     const minimumZoom = getMinimumCalendarZoom(
@@ -557,10 +551,7 @@ export const Gantt: React.FC<GanttProps> = ({
       const anchorX = zoomAnchorXRef.current ?? root.clientWidth / 2;
       pendingZoomAnchorRef.current = {
         correctionCount: 0,
-        date: xToDate(
-          previousAxisRef.current,
-          root.scrollLeft + anchorX
-        ),
+        date: xToDate(previousAxisRef.current, root.scrollLeft + anchorX),
         viewportX: anchorX,
       };
       previousZoomLevelRef.current = effectiveZoomLevel;
@@ -574,10 +565,7 @@ export const Gantt: React.FC<GanttProps> = ({
       const nextScroll = Math.min(maximumScroll, Math.max(0, requestedScroll));
       const residualPixels = requestedScroll - nextScroll;
 
-      if (
-        Math.abs(residualPixels) > 0.5 &&
-        pendingAnchor.correctionCount < 3
-      ) {
+      if (Math.abs(residualPixels) > 0.5 && pendingAnchor.correctionCount < 3) {
         pendingAnchor.correctionCount++;
         setAxisOffsetMs(
           current => current + residualPixels / axis.pixelsPerMillisecond
@@ -605,7 +593,9 @@ export const Gantt: React.FC<GanttProps> = ({
   const { startDate } = axis;
   const minTaskDate = useMemo(() => {
     const dated = visibleTasks.filter(task => task.type !== "empty");
-    return dated.length ? new Date(Math.min(...dated.map(task => task.start.getTime()))) : startDate;
+    return dated.length
+      ? new Date(Math.min(...dated.map(task => task.start.getTime())))
+      : startDate;
   }, [visibleTasks, startDate]);
 
   const dateFormats = useMemo<DateFormats>(
