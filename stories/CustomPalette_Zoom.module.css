@@ -17,3 +17,9 @@
   min-width: 130px;
   padding: 4px 8px;
 }
+
+.controls input {
+  box-sizing: border-box;
+  width: 80px;
+  padding: 4px 8px;
+}
