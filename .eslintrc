@@ -1,12 +1,19 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["react-app", "react-app/jest"],
-  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "react"],
   "env": {
-    "node": true
+    "browser": true,
+    "node": true,
+    "es2021": true
   },
   "parserOptions": {
-    "ecmaVersion": 2020,
+    "ecmaVersion": 2021,
+    "sourceType": "module",
     "ecmaFeatures": {
       "legacyDecorators": true,
       "jsx": true
@@ -14,7 +21,7 @@
   },
   "settings": {
     "react": {
-      "version": "16"
+      "version": "detect"
     }
   },
   "rules": {
@@ -25,7 +32,13 @@
     "react/no-unused-prop-types": 0,
     "import/export": 0,
     "no-unused-vars": "off",
+    "no-undef": "off",
     "no-use-before-define": "off",
-    "@typescript-eslint/no-unused-vars": "error"
+    "no-case-declarations": "off",
+    "no-constant-condition": "off",
+    "prefer-const": "off",
+    "@typescript-eslint/no-wrapper-object-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "caughtErrors": "none" }]
   }
 }
