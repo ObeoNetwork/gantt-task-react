@@ -34,6 +34,7 @@ export function initTasks() {
       ),
       name: "Idea",
       description: "",
+      duration: 3,
       id: "Idea",
       progress: 45,
       type: "task",
