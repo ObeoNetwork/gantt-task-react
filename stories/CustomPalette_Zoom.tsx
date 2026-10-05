@@ -34,6 +34,16 @@ export const CustomPalette_Zoom: React.FC = props => {
     setView(event.target.value as ViewMode);
   };
 
+  const handleZoomLevelChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const nextZoomLevel = event.target.valueAsNumber;
+
+    if (Number.isFinite(nextZoomLevel)) {
+      setZoomLevel(Math.max(1, Math.min(400, nextZoomLevel)));
+    }
+  };
+
   const onChangeTasks = useCallback<OnChangeTasks>(
     (newTaskOrEmptys, action) => {
       const newTasks: Task[] = newTaskOrEmptys.map(task => task as Task);
@@ -491,6 +501,16 @@ export const CustomPalette_Zoom: React.FC = props => {
             </option>
           ))}
         </select>
+        <label htmlFor="zoom-level">Zoom level (%)</label>
+        <input
+          id="zoom-level"
+          type="number"
+          min={1}
+          max={400}
+          step={10}
+          value={zoomLevel}
+          onChange={handleZoomLevelChange}
+        />
       </div>
       <Gantt
         {...props}

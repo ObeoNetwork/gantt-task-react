@@ -71,6 +71,7 @@ import {
 import {
   createTimelineAxis,
   dateToX,
+  getTimelineAxisOffset,
   xToDate,
 } from "../../helpers/timeline-axis";
 import { defaultCheckIsHoliday } from "./default-check-is-holiday";
@@ -475,7 +476,7 @@ export const Gantt: React.FC<GanttProps> = ({
   }, [viewportWidth, visibleTasks]);
   const [calendarViewMode, setCalendarViewMode] = useState(viewMode);
   const previousRequestedViewModeRef = useRef(viewMode);
-  const previousRequestedZoomRef = useRef(requestedZoomLevel);
+  const previousRequestedZoomRef = useRef<number | null>(null);
 
   useLayoutEffect(() => {
     const isViewModeChanged = previousRequestedViewModeRef.current !== viewMode;
@@ -514,6 +515,13 @@ export const Gantt: React.FC<GanttProps> = ({
     requestedZoomLevel,
   ]);
   const svgWidth = viewportWidth * Math.max(1, effectiveZoomLevel / 100);
+  const isTaskFitZoom =
+    requestedZoomLevel === 100 && effectiveZoomLevel === 100;
+  const appliedAxisOffsetMs = getTimelineAxisOffset(
+    axisOffsetMs,
+    requestedZoomLevel,
+    effectiveZoomLevel
+  );
   const baseAxis = useMemo(
     () =>
       createTimelineAxis(
@@ -526,10 +534,10 @@ export const Gantt: React.FC<GanttProps> = ({
   const axis = useMemo(
     () => ({
       ...baseAxis,
-      startDate: new Date(baseAxis.startDate.getTime() + axisOffsetMs),
-      endDate: new Date(baseAxis.endDate.getTime() + axisOffsetMs),
+      startDate: new Date(baseAxis.startDate.getTime() + appliedAxisOffsetMs),
+      endDate: new Date(baseAxis.endDate.getTime() + appliedAxisOffsetMs),
     }),
-    [axisOffsetMs, baseAxis]
+    [appliedAxisOffsetMs, baseAxis]
   );
   const previousAxisRef = useRef(axis);
   const previousZoomLevelRef = useRef(effectiveZoomLevel);
@@ -540,10 +548,28 @@ export const Gantt: React.FC<GanttProps> = ({
   } | null>(null);
 
   useLayoutEffect(() => {
+    if (isTaskFitZoom && axisOffsetMs !== 0) {
+      setAxisOffsetMs(0);
+    }
+  }, [axisOffsetMs, isTaskFitZoom]);
+
+  useLayoutEffect(() => {
     const root = ganttTaskRootRef.current;
     if (!root) {
       previousAxisRef.current = axis;
       previousZoomLevelRef.current = effectiveZoomLevel;
+      return;
+    }
+
+    if (isTaskFitZoom) {
+      pendingZoomAnchorRef.current = null;
+      previousAxisRef.current = axis;
+      previousZoomLevelRef.current = effectiveZoomLevel;
+
+      if (root.scrollLeft !== 0) {
+        setScrollXProgrammatically(0);
+      }
+
       return;
     }
 
@@ -578,7 +604,13 @@ export const Gantt: React.FC<GanttProps> = ({
     }
 
     previousAxisRef.current = axis;
-  }, [axis, effectiveZoomLevel, ganttTaskRootRef, setScrollXProgrammatically]);
+  }, [
+    axis,
+    effectiveZoomLevel,
+    ganttTaskRootRef,
+    isTaskFitZoom,
+    setScrollXProgrammatically,
+  ]);
 
   const handleZoomPointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {

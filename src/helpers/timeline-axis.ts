@@ -41,3 +41,13 @@ export const dateToX = (axis: TimelineAxis, date: Date) =>
 
 export const xToDate = (axis: TimelineAxis, x: number) =>
   new Date(axis.startDate.getTime() + x / axis.pixelsPerMillisecond);
+
+/** The 100% task-fit axis must retain its exact 5%/15% margins. */
+export const getTimelineAxisOffset = (
+  axisOffsetMs: number,
+  requestedZoomLevel: number,
+  effectiveZoomLevel: number
+) =>
+  requestedZoomLevel === 100 && effectiveZoomLevel === 100
+    ? 0
+    : axisOffsetMs;
