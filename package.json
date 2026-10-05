@@ -6,7 +6,7 @@
   "homepage": "https://github.com/ObeoNetwork/gantt-task-react",
   "license": "MIT",
   "engines": {
-    "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+    "node": ">=21.1.0"
   },
   "repository": "ObeoNetwork/gantt-task-react",
   "publishConfig": {
