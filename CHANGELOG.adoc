@@ -1,5 +1,14 @@
 = Changelog
 
+== v0.6.7
+
+=== New features
+- Dissociate zoomLevel and viewMode. ZoomLevel acts on zoom and viewMode acts on the time granularity of the column(day, week, month etc)
+- Support providing the task duration instead of letting `gantt-task-react`compute it
+
+=== Breaking changes
+- Require node engine 21
+
 == v0.6.6
 
 === Breaking changes
