@@ -161,6 +161,11 @@ export interface Task {
   start: Date;
   end: Date;
   /**
+   * Duration in days shown in the default tooltip. When omitted, it is
+   * calculated from start and end.
+   */
+  duration?: number;
+  /**
    * From 0 to 100
    */
   progress: number;
@@ -533,6 +538,9 @@ export interface StylingOption {
     task: Task;
     fontSize: string;
     fontFamily: string;
+    isMoving?: boolean;
+    isResizing?: boolean;
+    originalTask?: Task;
   }>;
   TaskListHeader?: ComponentType<TaskListHeaderProps>;
   TaskListTable?: ComponentType<TaskListTableProps>;

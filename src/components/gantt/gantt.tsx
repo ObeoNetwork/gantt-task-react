@@ -1901,7 +1901,7 @@ export const Gantt: React.FC<GanttProps> = ({
     }
   };
 
-    const handleTaskClick = (task: TaskOrEmpty) => {
+  const handleTaskClick = (task: TaskOrEmpty) => {
     if (onTaskClick) {
       onTaskClick(task);
     }
@@ -2054,7 +2054,9 @@ export const Gantt: React.FC<GanttProps> = ({
       ref={wrapperRef}
       data-testid={`gantt-main`}
       style={{
-        gridTemplateColumns: `${displayTable ? "max-content " : ""}minmax(0, 1fr)`,
+        gridTemplateColumns: `${
+          displayTable ? "max-content " : ""
+        }minmax(0, 1fr)`,
       }}
     >
       {/* {columns.length > 0 && <TaskList {...tableProps} />} */}
@@ -2085,6 +2087,10 @@ export const Gantt: React.FC<GanttProps> = ({
           getFloatingProps={getFloatingProps}
           fontFamily={fontFamily}
           fontSize={fontSize}
+          isResizing={
+            changeInProgress?.action === "start" ||
+            changeInProgress?.action === "end"
+          }
           task={tooltipTaskFromMap}
           TooltipContent={TooltipContent}
         />

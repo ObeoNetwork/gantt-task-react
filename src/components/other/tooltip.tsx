@@ -15,10 +15,12 @@ export type TooltipProps = {
   task: Task;
   fontSize: string;
   fontFamily: string;
+  isResizing: boolean;
   TooltipContent: ComponentType<{
     task: Task;
     fontSize: string;
     fontFamily: string;
+    isResizing?: boolean;
   }>;
 };
 
@@ -31,6 +33,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   task,
   fontSize,
   fontFamily,
+  isResizing,
   TooltipContent,
 }) => {
   return (
@@ -44,7 +47,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
       }}
       {...getFloatingProps()}
     >
-      <TooltipContent task={task} fontSize={fontSize} fontFamily={fontFamily} />
+      <TooltipContent
+        task={task}
+        fontSize={fontSize}
+        fontFamily={fontFamily}
+        isResizing={isResizing}
+      />
     </div>
   );
 };
@@ -53,28 +61,38 @@ export const StandardTooltipContent: React.FC<{
   task: Task;
   fontSize: string;
   fontFamily: string;
-}> = ({ task, fontSize, fontFamily }) => {
+  isResizing?: boolean;
+}> = ({ task, fontSize, fontFamily, isResizing = false }) => {
   const style = {
     fontSize,
     fontFamily,
   };
 
-  const duration = (): number => {
-            const diff =
-              (task.end.getTime() - task.start.getTime()) /
-              (1000 * 60 * 60 * 24);
+  const computedDuration = (): number => {
+    const diff =
+      (task.end.getTime() - task.start.getTime()) / (1000 * 60 * 60 * 24);
 
-            const floor = Math.floor(diff);
-            let remainder = diff % 1;
-            let roundedRemainder = 0;
-            if (remainder < 0.25) {
-              roundedRemainder = 0;
-            } else if (remainder >= 0.25 && remainder < 0.75) {
-              roundedRemainder = 0.5;
-            } else if (remainder >= 0.75) {
-              roundedRemainder = 1;
-            }
-            return floor + roundedRemainder;
+    const floor = Math.floor(diff);
+    const remainder = diff % 1;
+    let roundedRemainder = 0;
+    if (remainder < 0.25) {
+      roundedRemainder = 0;
+    } else if (remainder >= 0.25 && remainder < 0.75) {
+      roundedRemainder = 0.5;
+    } else if (remainder >= 0.75) {
+      roundedRemainder = 1;
+    }
+    return floor + roundedRemainder;
+  };
+
+  const duration = (): string => {
+    if (task.duration !== undefined) {
+      if (isResizing) {
+        return "?";
+      } else {
+        return `${task.duration} day(s)`;
+      }
+    } else return `${computedDuration()} day(s)`;
   };
 
   return (
@@ -86,10 +104,11 @@ export const StandardTooltipContent: React.FC<{
       }-${task.start.getFullYear()} - ${task.end.getDate()}-${
         task.end.getMonth() + 1
       }-${task.end.getFullYear()}`}</b>
-      {task.end.getTime() - task.start.getTime() !== 0 && (
+      {(task.duration !== undefined ||
+        task.end.getTime() - task.start.getTime() !== 0) && (
         <p className={styles.tooltipDefaultContainerParagraph}>
           <strong>Duration: </strong>
-          {`${duration()} day(s)`}
+          {duration()}
         </p>
       )}
 
