@@ -55,6 +55,17 @@ npm install
 npm start
 ```
 
+## Run tests
+
+Use Node.js 20 (the version in `.nvmrc`) or another supported version of Node.js 18.18 or newer. From the repository root:
+
+```
+npm install
+npm test
+```
+
+`npm test` runs the Vitest suite, ESLint, and the production build. Use `npm run test:watch` while developing.
+
 ## Gantt Configuration
 
 ### GanttProps
