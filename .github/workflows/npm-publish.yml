@@ -4,6 +4,10 @@ on:
   release:
     types: [published, edited]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   release:
     name: publish
@@ -13,11 +17,11 @@ jobs:
       - name: Begin CI...
         uses: actions/checkout@v2
 
-      - name: Use Node 22
+      - name: Use Node 24
         uses: actions/setup-node@v1
         with:
-          node-version: 22.x
-          registry-url: https://npm.pkg.github.com/
+          node-version: 24.20.0
+          registry-url: https://registry.npmjs.org/
 
       - name: NPM Publish
         run: |
@@ -26,6 +30,4 @@ jobs:
           else
           npm i
           fi
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          npm stage publish --access public
