@@ -34,3 +34,6 @@ yarn-error.log*
 storybook-static
 
 *storybook.log
+
+# IntelliJ IDEA
+.idea

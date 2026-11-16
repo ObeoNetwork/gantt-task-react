@@ -1,13 +1,20 @@
 {
-  "name": "@ObeoNetwork/gantt-task-react",
+  "name": "@obeonetwork/gantt-task-react",
   "version": "0.7.1",
   "description": "Interactive Gantt Chart for React with TypeScript.",
   "author": "MaTeMaTuK <maksym.vikarii@gmail.com>",
+  "contributors": [
+    "Obeo"
+  ],
   "homepage": "https://github.com/ObeoNetwork/gantt-task-react",
   "license": "MIT",
-  "repository": "ObeoNetwork/gantt-task-react",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ObeoNetwork/gantt-task-react.git"
+  },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "main": "./dist/gantt-task-react.umd.js",
   "module": "./dist/gantt-task-react.es.js",
@@ -26,7 +33,7 @@
   ],
   "scripts": {
     "storybook": "storybook dev -p 6006",
-    "build": "vite build && tsc",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "start": "vite --host",
     "prepare": "run-s build",
     "test": "run-s test:unit test:lint test:build",

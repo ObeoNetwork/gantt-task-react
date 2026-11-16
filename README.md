@@ -7,7 +7,7 @@
 ## Install
 
 ```
-npm install gantt-task-react
+npm install @obeonetwork/gantt-task-react
 ```
 
 ## How to use it
