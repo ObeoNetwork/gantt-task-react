@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Begin CI...
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
       - name: Use Node 24
         uses: actions/setup-node@v1
